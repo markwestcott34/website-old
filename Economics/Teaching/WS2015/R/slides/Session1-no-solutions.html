@@ -407,7 +407,7 @@ sum(sample(1:100, 200, replace = T) > 50)
 ```
 
 ```
-## [1] 88
+## [1] 102
 ```
 
 4.
@@ -423,7 +423,7 @@ mean(mc)
 ```
 
 ```
-## [1] 101.11
+## [1] 101.05
 ```
 
 ```r
@@ -431,7 +431,7 @@ var(mc)
 ```
 
 ```
-## [1] 47.31101
+## [1] 48.18939
 ```
 
 ```r
@@ -439,7 +439,7 @@ sqrt(var(mc)/length(mc))
 ```
 
 ```
-## [1] 0.68783
+## [1] 0.6941858
 ```
 
 6.
@@ -453,7 +453,7 @@ qplot(x = mc, binwidth=1, xlab = "Draws greather than 50", ylab="Count")
 --->
 </div>
 <div id="subsets-and-functions" class="slide section level1">
-<h1>Subsets and functions</h1>
+<h1>Subsets and Functions</h1>
 <p>Material:</p>
 <ul>
 <li>Vector subsetting</li>
@@ -462,7 +462,7 @@ qplot(x = mc, binwidth=1, xlab = "Draws greather than 50", ylab="Count")
 </ul>
 </div>
 <div id="subsets-and-functions-code" class="slide section level1">
-<h1>Subsets and functions: code</h1>
+<h1>Subsets and Functions: code</h1>
 <p>Logical tests of a vector element</p>
 <pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">4</span>*<span class="dv">2</span>,<span class="dv">10</span>,<span class="kw">rev</span>(<span class="dv">1</span>:<span class="dv">4</span>*<span class="dv">2</span>))
 y</code></pre>
@@ -522,7 +522,7 @@ number &lt;-<span class="st"> </span><span class="dv">3</span>
 }</code></pre>
 </div>
 <div id="subsets-and-functions-exercices" class="slide section level1">
-<h1>Subsets and functions: Exercices</h1>
+<h1>Subsets and Functions: Exercices</h1>
 <h3 id="exercise-1-quick">Exercise 1 (quick)</h3>
 <p>You can access the letters a-z using `letters’. Find two ways of listing every third letter in the alphabet.</p>
 <h3 id="exercise-2">Exercise 2</h3>
@@ -546,7 +546,7 @@ number &lt;-<span class="st"> </span><span class="dv">3</span>
 <li>How can you create a vector all numbers between <code>2</code> and <code>x-1</code>?</li>
 <li>You can use the modulo function <code>%%</code> again</li>
 <li>Think about recycling! Like all R base operations, <code>%%</code> will operate on a vector <!---
-#Subsets and functions: Exercise Solutions
+#Subsets and Functions: Exercise Solutions
 
 ###Exercise 1
 
@@ -625,12 +625,12 @@ l</code></pre>
 <p>or by passing a vector to the <code>matrix</code> function, specifying the desired number or rows and columns:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">matrix</span>(<span class="kw">sample</span>(<span class="dv">1</span>:<span class="dv">24</span>,<span class="dv">24</span>),<span class="dt">nrow=</span><span class="dv">6</span>)</code></pre>
 <pre><code>##      [,1] [,2] [,3] [,4]
-## [1,]   24   19    9    4
-## [2,]    6   12   23   20
-## [3,]    5   10    7    3
-## [4,]    8   21   17   16
-## [5,]    2   18   13   22
-## [6,]   14   15   11    1</code></pre>
+## [1,]    7   10   22   11
+## [2,]   17   19    3    2
+## [3,]    9    4   16   20
+## [4,]   15    8   24    5
+## [5,]   23   18   21    1
+## [6,]   14   12    6   13</code></pre>
 <p>Find the dimensions of a matrix</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(m)</code></pre>
 <pre><code>## [1] 3</code></pre>
