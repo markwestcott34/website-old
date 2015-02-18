@@ -181,7 +181,7 @@ admissions_r &lt;- lm(admit ~ gre + gpa + I(rank == 1) , data=admissions)</code>
 <h2>Interaciton terms</h2>
 <pre class="r"><code>library('foreign')
 mroz &lt;- read.dta(&quot;http://markwestcott34.github.io/Economics/Teaching/WS2015/R/datasets/mroz.dta&quot;)
-mroz$hasKids &lt;- ifelse(mroz$kidslt6 == 0 &amp; mroz$kidslt6 == 0,0,1) #handy function
+mroz$hasKids &lt;- ifelse(mroz$kidslt6 == 0 &amp; mroz$kidsge6 == 0, 0,  1) #handy function
 mroz_r &lt;- lm(faminc ~ factor(city):factor(hasKids),data=mroz) #equivalent to city##hasKids in Stata</code></pre>
 </div>
 <div id="hypothesis-testing" class="section level2">
@@ -1014,11 +1014,11 @@ flights %&gt;% sample_n(5)</code></pre>
 <pre><code>## Source: local data frame [5 x 22]
 ## 
 ##   Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1 2011     4          8         5    1333    1523            OO      1147
-## 2 2011     6         16         4     847    1035            XE      2302
-## 3 2011     9         22         4    1833    1953            XE      4616
-## 4 2011    12         13         2    1307    1721            US      1824
-## 5 2011    12         30         5    1601    1908            CO      1089
+## 1 2011     9          8         4    1442    1904            CO      1133
+## 2 2011    11         11         5    1146    1225            WN      1509
+## 3 2011     3          4         5    1630    1747            AA       458
+## 4 2011     1          6         4    1258    1643            CO       534
+## 5 2011     7         11         1    2154       2            WN      1553
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
 ##   Distance (int), TaxiIn (int), TaxiOut (int), Cancelled (int),
@@ -1028,16 +1028,16 @@ flights %&gt;% sample_frac(0.25, replace=TRUE)</code></pre>
 <pre><code>## Source: local data frame [56,874 x 22]
 ## 
 ##    Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1  2011     6         24         5      NA      NA            WN        42
-## 2  2011     9         27         2     930    1138            CO      1539
-## 3  2011     4          7         4    1908    2340            CO       582
-## 4  2011     4          3         7    1300    1430            XE      2174
-## 5  2011     4         10         7    1808    1930            WN      1655
-## 6  2011     7         21         4     753     909            WN       323
-## 7  2011     9         29         4    2218    2307            WN        55
-## 8  2011     6         18         6    1430    1701            CO       746
-## 9  2011     8          8         1    1908    2037            XE      2804
-## 10 2011     9         11         7    1021    1345            OO      2061
+## 1  2011     8          3         3    1320    1744            CO      1811
+## 2  2011     5         22         7    1909    2055            CO       297
+## 3  2011     6          1         3    1244    1429            XE      2881
+## 4  2011     1         15         6    1907    2237            CO       250
+## 5  2011     8         14         7     752    1105            CO      1487
+## 6  2011    11         23         3    1136    1619            CO      1574
+## 7  2011     4         21         4    1851    2312            CO       732
+## 8  2011     2         16         3    1325    1634            XE      2380
+## 9  2011    10         28         5     805    1043            XE      4455
+## 10 2011     3         11         5     721     827            XE      2525
 ## ..  ...   ...        ...       ...     ...     ...           ...       ...
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
@@ -1159,107 +1159,19 @@ publishers &lt;- read.csv(text = publishers, strip.white = TRUE, as.is=T)</code>
 </ul>
 <p>Your task is to merge this data into one nice data set. Namely:</p>
 <ol style="list-style-type: decimal">
-<li><p>Read in all the *CG.csv files and merge them together. Add a ‘year’ column which tells you which file each observation came from. (Make sure it’s a numeric!)</p>
-<pre><code>                                                                                                                                2. Unfortunately, the column names are missing in the all csv files, but you can find them listed in the 'abbr' column in the &quot;colnames78-83.csv&quot; file.  Add them in
-
-                                                                                                                                3. The carline.code column is numeric - so we've lost the leading zeros. Convert the column to strings (as.character) and use `str_pad` from the `stringr` package to add leading zeros.
-
-                                                                                                                                4. Extract the manufacture code (first three digits) using the `str_sub` function from the `stringr` package.
-
-                                                                                                                                5. Now merge in the manufacturer names from mfgcodes.csv. Two problems with that file you'll want to solve before the merge: there are junk columns &quot;V14&quot; and &quot;V1&quot;, and the manufacture codes have got spaces before/after them. For the later, find a function in the string_r package by finding it's documentation online or with `help(package = stringr)`
-
-                                                                                                                                6. Now we want to merge in the data stored in the *CARLIN.csv files. This contains further information in each carline (for example, how big the interior is for twodoor/fourdoor/hatchback body types). Read all these files in to one data frame. Once again, column names are missing. They should be as follows: &quot;manufacturer&quot;, &quot;class&quot;,&quot;f1&quot;,&quot;f2&quot;,&quot;f3&quot;, &quot;twodoor.p&quot;, &quot;twodoor.l&quot;, &quot;fourdoor.p&quot;, &quot;fourdoor.l&quot;, &quot;hatch.l&quot;, &quot;model&quot;, &quot;codesymm&quot;
-
-                                                                                                                                7. Get rid of the following columns from the carlinedata merged file, they contain misleading information: 
-                                                                                                                                  manufacturer, class, f1, f2, f3, f4, year, model
-
-                                                                                                                                7. We are nearly ready to merge the cars data with all the carline data. But to do so, we need a common ID. To do so: 
-                                                                                                                                  a. Take the first 7 digits of the codesymmfrom the carline data
-                                                                                                                                b. For the car data, combine a two digit year code with the carlinecode. So if the carlinecode was &quot;040857&quot; and the data came from the 1978 file, it would be &quot;78040857&quot;
-
-                                                                                                                                8. Do the merge!
-
-
-
-
-                                                                                                                                  ```r
-                                                                                                                                                                                                                                                                          #Clear the environment
-                                                                                                                                                                                                                                                                          rm(list = ls())
-
-                                                                                                                                                                                                                                                                          #Load the stringr package, we'll need it for some string manipulation.
-                                                                                                                                                                                                                                                                          library(stringr)
-                                                                                                                                                                                                                                                                          library(dplyr)
-
-                                                                                                                                                                                                                                                                          setwd(&quot;/Users/mark/markwestcott34.github.io/Economics/Teaching/WS2015/R/fuel-economy&quot;)
-
-                                                                                                                                                                                                                                                                          #generate a list of all files starting with CG
-                                                                                                                                                                                                                                                                          cgfiles &lt;- list.files(pattern= &quot;*CG.csv&quot;)
-
-                                                                                                                                                                                                                                                                          #call read.csv on each one, using lapply
-                                                                                                                                                                                                                                                                          filecg &lt;- lapply(cgfiles, read.csv, as.is = TRUE)
-
-                                                                                                                                                                                                                                                                          #use do.call to append them altogether. This is a neat trick.
-                                                                                                                                                                                                                                                                          cars &lt;- do.call(rbind, filecg)
-
-                                                                                                                                                                                                                                                                          #Read in the list of column names
-                                                                                                                                                                                                                                                                          colmap78.83&lt;- read.csv(file=&quot;colnames78-83.csv&quot;, header=TRUE)
-
-                                                                                                                                                                                                                                                                          #And set columnnames according to that list.
-                                                                                                                                                                                                                                                                          colnames(cars) &lt;- colmap78.83$abbr
-
-                                                                                                                                                                                                                                                                          #add the year
-                                                                                                                                                                                                                                                                          cars$year &lt;- rep(1978:1983, times = sapply(filecg, nrow))
-
-                                                                                                                                                                                                                                                                          #The carline code is a five digit string, the first three digits represent a manufacturer (&quot;BMW&quot;) and the next two a line  (&quot;5 Series&quot;). Somewhere along the line leading zeros have got lost, so we need to add them back in.
-
-                                                                                                                                                                                                                                                                          #car codes should be five digits, with leading zeros if necessary
-                                                                                                                                                                                                                                                                          cars$carline.code &lt;- as.character(cars$carline.code)
-                                                                                                                                                                                                                                                                          cars$carline.code &lt;- str_pad(cars$carline.code,5, side=&quot;left&quot;, pad=&quot;0&quot;)
-
-                                                                                                                                                                                                                                                                          #extract manufacture and car code using str_sub function 
-                                                                                                                                                                                                                                                                          cars$mfg.code &lt;- str_sub(cars$carline.code,1,3)
-
-                                                                                                                                                                                                                                                                          mfgcodelist &lt;- read.csv(file=&quot;mfgcodes.csv&quot;,header=TRUE)
-                                                                                                                                                                                                                                                                          #get rid of a couple of junk columns
-                                                                                                                                                                                                                                                                          mfgcodelist &lt;- mfgcodelist[,3:4]
-
-                                                                                                                                                                                                                                                                          #again, we need to pad out - this time to three digits
-                                                                                                                                                                                                                                                                          mfgcodelist$mfg.code &lt;- as.character(mfgcodelist$mfg.code)
-                                                                                                                                                                                                                                                                          mfgcodelist$mfg.code &lt;- str_pad(mfgcodelist$mfg.code,3, side=&quot;left&quot;, pad=&quot;0&quot;)
-
-                                                                                                                                                                                                                                                                          #merge the manufacture data in
-                                                                                                                                                                                                                                                                          cars &lt;- merge(cars,mfgcodelist, by=&quot;mfg.code&quot;)
-
-                                                                                                                                                                                                                                                                          #read in carlinedata
-
-                                                                                                                                                                                                                                                                          carlinfiles &lt;- list.files(pattern = &quot;*CARLIN.csv&quot;)
-                                                                                                                                                                                                                                                                          carlin &lt;- lapply(carlinfiles, read.csv, as.is = TRUE, header=F)
-
-                                                                                                                                                                                                                                                                          carlinedata &lt;- do.call(rbind, carlin)
-                                                                                                                                                                                                                                                                          names(carlinedata) &lt;- c(&quot;manufacturer&quot;, &quot;class&quot;,&quot;f1&quot;,&quot;f2&quot;,&quot;f3&quot;, &quot;twodoor.p&quot;, &quot;twodoor.l&quot;, &quot;fourdoor.p&quot;, &quot;fourdoor.l&quot;, &quot;hatch.l&quot;, &quot;model&quot;,&quot;codesymm&quot;)
-                                                                                                                                                                                                                                                                          rownames(carlinedata) &lt;- NULL #don't need them
-
-                                                                                                                                                                                                                                                                          #Take the first 7 digits of the codesymm as the match code
-                                                                                                                                                                                                                                                                          carlinedata$code.2 &lt;- substr(carlinedata$codesymm,1,7)
-
-                                                                                                                                                                                                                                                                          #Get rid of stuff that we don't need (as we already have it )
-                                                                                                                                                                                                                                                                          carlinedata$manufacturer &lt;- NULL
-                                                                                                                                                                                                                                                                          carlinedata$class &lt;- NULL
-                                                                                                                                                                                                                                                                          carlinedata$f1 &lt;- NULL
-                                                                                                                                                                                                                                                                          carlinedata$f2 &lt;- NULL
-                                                                                                                                                                                                                                                                          carlinedata$f3 &lt;- NULL
-                                                                                                                                                                                                                                                                          carlinedata$f4 &lt;- NULL
-                                                                                                                                                                                                                                                                          carlinedata$year &lt;- NULL
-                                                                                                                                                                                                                                                                          carlinedata$model &lt;- NULL
-
-
-
-
-                                                                                                                                                                                                                                                                          #calculate the &quot;code.2&quot; for each vehicle. that's going to allow to match against the carlin data 
-                                                                                                                                                                                                                                                                          cars$code.2 &lt;- paste(substr(cars$year,3,4),cars$carline.code,sep=&quot;&quot;)
-
-                                                                                                                                                                                                                                                                          cars &lt;- left_join(cars,carlinedata,by=&quot;code.2&quot;)
-                                                                                                                                  ```</code></pre></li>
+<li><p>Read in all the *CG.csv files and merge them together. Add a ‘year’ column which tells you which file each observation came from. (Make sure it’s a numeric!)</p></li>
+<li><p>Unfortunately, the column names are missing in the all csv files, but you can find them listed in the ‘abbr’ column in the “colnames78-83.csv” file. Add them in</p></li>
+<li><p>The carline.code column is numeric - so we’ve lost the leading zeros. Convert the column to strings (as.character) and use <code>str_pad</code> from the <code>stringr</code> package to add leading zeros.</p></li>
+<li><p>Extract the manufacture code (first three digits) using the <code>str_sub</code> function from the <code>stringr</code> package.</p></li>
+<li><p>Now merge in the manufacturer names from mfgcodes.csv. Two problems with that file you’ll want to solve before the merge: there are junk columns “V14” and “V1”, and the manufacture codes have got spaces before/after them. For the later, find a function in the string_r package by finding it’s documentation online or with <code>help(package = stringr)</code>.</p></li>
+<li><p>Now we want to merge in the data stored in the *CARLIN.csv files. This contains further information in each carline (for example, how big the interior is for twodoor/fourdoor/hatchback body types). Read all these files in to one data frame. Once again, column names are missing. They should be as follows: “manufacturer”, “class”,“f1”,“f2”,“f3”, “twodoor.p”, “twodoor.l”, “fourdoor.p”, “fourdoor.l”, “hatch.l”, “model”, “codesymm”</p></li>
+<li><p>Get rid of the following columns from the carlinedata merged file, they contain misleading information: manufacturer, class, f1, f2, f3, model</p></li>
+<li>We are nearly ready to merge the cars data with all the carline data. But to do so, we need a common ID. To do so:
+<ol style="list-style-type: lower-alpha">
+<li>Take the first 7 digits of the codesymmfrom the carline data</li>
+<li>For the car data, combine a two digit year code with the carlinecode. So if the carlinecode was “040857” and the data came from the 1978 file, it would be “78040857”</li>
+</ol></li>
+<li><p>Do the merge!</p></li>
 </ol>
 </div>
 

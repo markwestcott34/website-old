@@ -83,36 +83,36 @@ summary &lt;- chicks %&gt;%                      # start with chicks
 summary</code></pre>
 <pre><code>## Source: local data frame [12 x 6]
 ## 
-##    Time Observations Mean.Weight Mean.Height SD.Weight  SD.Height
-## 1     0           50    41.06000    15.75172  1.132272  0.5930852
-## 2     2           50    49.22000    18.33989  3.688316  1.3772990
-## 3     4           49    59.95918    22.04430  4.495179  1.5857652
-## 4     6           49    74.30612    26.66151  9.012038  2.9174870
-## 5     8           49    91.24490    32.36537 16.239780  5.4685629
-## 6    10           49   107.83673    37.93320 23.987277  8.0074401
-## 7    12           49   129.24490    45.05720 34.119600 11.3086138
-## 8    14           48   143.81250    49.92065 38.300412 12.8256066
-## 9    16           47   168.08511    58.06503 46.904079 15.7328402
-## 10   18           47   190.19149    65.36260 57.394757 19.0788857
-## 11   20           46   209.71739    71.91789 66.511708 22.2007435
-## 12   21           45   218.68889    74.82342 71.510273 23.8501211</code></pre>
+##    Time Observations Mean.Weight Mean.Height SD.Weight SD.Height
+## 1     0           50    41.06000    15.66934  1.132272  0.712866
+## 2     2           50    49.22000    18.36020  3.688316  1.430160
+## 3     4           49    59.95918    22.00642  4.495179  1.693384
+## 4     6           49    74.30612    26.80825  9.012038  3.021302
+## 5     8           49    91.24490    32.40716 16.239780  5.478637
+## 6    10           49   107.83673    37.97109 23.987277  8.065463
+## 7    12           49   129.24490    45.09561 34.119600 11.284767
+## 8    14           48   143.81250    49.79325 38.300412 12.621665
+## 9    16           47   168.08511    58.01360 46.904079 15.661831
+## 10   18           47   190.19149    65.39873 57.394757 19.130754
+## 11   20           46   209.71739    72.03485 66.511708 22.215320
+## 12   21           45   218.68889    74.82531 71.510273 23.897833</code></pre>
 <pre class="r"><code>summary %&gt;% 
   mutate(deaths = Observations - lead(Observations)) #how much does the number of Observations decrease to the next period?</code></pre>
 <pre><code>## Source: local data frame [12 x 7]
 ## 
-##    Time Observations Mean.Weight Mean.Height SD.Weight  SD.Height deaths
-## 1     0           50    41.06000    15.75172  1.132272  0.5930852      0
-## 2     2           50    49.22000    18.33989  3.688316  1.3772990      1
-## 3     4           49    59.95918    22.04430  4.495179  1.5857652      0
-## 4     6           49    74.30612    26.66151  9.012038  2.9174870      0
-## 5     8           49    91.24490    32.36537 16.239780  5.4685629      0
-## 6    10           49   107.83673    37.93320 23.987277  8.0074401      0
-## 7    12           49   129.24490    45.05720 34.119600 11.3086138      1
-## 8    14           48   143.81250    49.92065 38.300412 12.8256066      1
-## 9    16           47   168.08511    58.06503 46.904079 15.7328402      0
-## 10   18           47   190.19149    65.36260 57.394757 19.0788857      1
-## 11   20           46   209.71739    71.91789 66.511708 22.2007435      1
-## 12   21           45   218.68889    74.82342 71.510273 23.8501211     NA</code></pre>
+##    Time Observations Mean.Weight Mean.Height SD.Weight SD.Height deaths
+## 1     0           50    41.06000    15.66934  1.132272  0.712866      0
+## 2     2           50    49.22000    18.36020  3.688316  1.430160      1
+## 3     4           49    59.95918    22.00642  4.495179  1.693384      0
+## 4     6           49    74.30612    26.80825  9.012038  3.021302      0
+## 5     8           49    91.24490    32.40716 16.239780  5.478637      0
+## 6    10           49   107.83673    37.97109 23.987277  8.065463      0
+## 7    12           49   129.24490    45.09561 34.119600 11.284767      1
+## 8    14           48   143.81250    49.79325 38.300412 12.621665      1
+## 9    16           47   168.08511    58.01360 46.904079 15.661831      0
+## 10   18           47   190.19149    65.39873 57.394757 19.130754      1
+## 11   20           46   209.71739    72.03485 66.511708 22.215320      1
+## 12   21           45   218.68889    74.82531 71.510273 23.897833     NA</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li></li>
 </ol>
@@ -131,16 +131,16 @@ test_data %&gt;%
 <pre><code>## Source: local data frame [200 x 2]
 ## 
 ##    x y
-## 1  0 5
-## 2  1 3
-## 3  0 3
+## 1  0 2
+## 2  2 5
+## 3  0 5
 ## 4  0 4
-## 5  0 4
-## 6  0 4
-## 7  0 4
+## 5  0 5
+## 6  0 5
+## 7  0 3
 ## 8  2 5
-## 9  0 4
-## 10 1 4
+## 9  0 3
+## 10 0 3
 ## .. . .</code></pre>
 <pre class="r"><code>#or to mutate_each
 test_data %&gt;% 
@@ -148,16 +148,16 @@ test_data %&gt;%
 <pre><code>## Source: local data frame [200 x 2]
 ## 
 ##    x y
-## 1  0 5
-## 2  1 3
-## 3  0 3
+## 1  0 2
+## 2  2 5
+## 3  0 5
 ## 4  0 4
-## 5  0 4
-## 6  0 4
-## 7  0 4
+## 5  0 5
+## 6  0 5
+## 7  0 3
 ## 8  2 5
-## 9  0 4
-## 10 1 4
+## 9  0 3
+## 10 0 3
 ## .. . .</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li></li>
@@ -190,8 +190,8 @@ players %&gt;%                                   # start with the players
 ## 10 aberscl01   1947      1921  4  26
 ## ..       ...    ...       ... .. ...</code></pre>
 </div>
-<div id="loading-and-merging-a-messy-data-structure-solutions" class="section level1">
-<h1>Loading and merging a messy data structure: solutions</h1>
+<div id="loading-and-merging-a-messy-data-structure-solution" class="section level1">
+<h1>Loading and merging a messy data structure: solution</h1>
 <pre class="r"><code>#Clear the environment
 rm(list = ls())
 
@@ -232,7 +232,7 @@ cars$mfg.code &lt;- str_sub(cars$carline.code,1,3) #extract the first three digi
 mfgcodelist &lt;- read.csv(file=&quot;mfgcodes.csv&quot;,header=TRUE)
 
 #get rid of a couple of junk columns
-mfgcodelist &lt;- mfgcodelist[,3:4] #git rid of 3rd and 4th columns
+mfgcodelist &lt;- mfgcodelist[,3:4] #get rid of 3rd and 4th columns
 
 #again, we need to pad out - this time to three digits
 mfgcodelist$mfg.code &lt;- as.character(mfgcodelist$mfg.code)
