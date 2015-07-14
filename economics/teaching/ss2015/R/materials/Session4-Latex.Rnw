@@ -1,0 +1,188 @@
+\documentclass{article}
+\usepackage{dcolumn}
+\usepackage{booktabs}
+
+\title{LaTeX and R Integration}
+\author{Mark Westcott}
+
+\begin{document}
+
+\maketitle
+
+\section{Idea}
+
+The idea is to integrate your LaTeX and R code into a single file, which will have an .Rnw extension. You can then compile a PDF direct from RStudio. \vspace{1em}
+\section{RStudio configuration}
+
+There are two systems that can do the work of producing a TeX file, Sweave and knitr. Tell RStudio to use `knitr', by going to Tools, Global Options,  Sweave and seting `Weave Rnw file using' to `knitr'.
+
+\section{Starting a project}
+Create a new project inside RStudio. Projects are neat - you get your environment saved between sessions as well as all your history. Create one by selecting File, New Project and clicking through the wizard.
+
+\section{Creating a Rnw file}
+
+Your combined \LaTeX{}/R file should have the Rnw extension. Create one with File, New File, R Sweave. This creates a \LaTeX{} document that you can compile by pressing `Compile PDF'
+
+You include your R code by inserting a 'Chunk' like this:
+
+\vspace{1em}
+
+\noindent
+\textless \textless myFirstChunk, echo=T, results=`asis' \textgreater \textgreater=  \newline
+myRcode()\newline
+@
+
+
+\section{Tables with stargazer}
+
+We'll be using stargazer to produce \LaTeX{}  tables direct out of our R regressions. There are lots of packages for doing this. If stargazer doesn't do everything you want (for example, it won't produce booktables), then look at texreg instead, it is more flexible, but slightly harder to figure out the documentation. 
+
+\subsection{Minimal example}
+
+
+<<doMinimalRegression,echo=T,warning=FALSE,message=FALSE>>=
+ #install.packages("stargazer")
+ library(stargazer)
+
+ df <- data.frame(y=rnorm(10),x1=1:10,x2=sample(10))
+ lm1 <- lm(y ~ x1 + x2, df)
+@
+
+<<outputMinimalTable, echo=T, results='asis' >>=
+stargazer(lm1)
+@
+
+\newpage
+\subsection{A regression on the `PublicSchools' dataset }
+
+<<doPublicShoolsRegression,warning=FALSE,message=FALSE>>=
+library("AER")
+data(PublicSchools)
+public_schools_r <- lm(Expenditure ~
+                         Income + I(Income^2), data=PublicSchools)
+@
+
+<<, echo=T, results='asis' >>=
+stargazer(public_schools_r)
+@
+
+\newpage
+We can provide extra options to stargazer to customize the output: 
+
+<<, echo=T, results='asis' >>=
+stargazer(public_schools_r, 
+          covariate.labels = c("Income","Income$^2$"), 
+          omit.stat = c("f", "adj.rsq", "ser"),
+          style="default",
+          title="Regression Outputs")
+@
+We have \Sexpr{nrow(PublicSchools)} observations in the dataset but only \Sexpr{nrow(public_schools_r$model)} in the regression output, due to a missing observation.
+
+\newpage
+
+\subsection{Different SEs across models}
+
+<<,warning=FALSE,message=FALSE>>=
+vc_homo <- vcov(public_schools_r)  #homosk
+vc_hc3 <- vcovHC(public_schools_r) #robust, default is HC3
+vc_hc1 <- vcovHC(public_schools_r, type = "HC1") #robust, Stata
+
+ses_homo <- sqrt(diag(vc_homo)) # homosk
+ses_hc3 <- sqrt(diag(vc_hc3))   # hdc3
+ses_hc1 <- sqrt(diag(vc_hc1))   # hc1
+
+@
+
+
+
+<<, echo=T, results='asis' >>=
+stargazer(public_schools_r, public_schools_r, public_schools_r,
+          se = list(ses_homo, ses_hc3, ses_hc1),
+          keep = c("Income"),
+          covariate.labels = c("Income","Income$^2$"), 
+          omit.stat = c("f", "adj.rsq", "ser"),
+          style="default",
+          intercept.bottom = F,
+          intercept.top = F,
+          title="Regression Outputs")
+@
+
+
+\newpage
+\subsection{Different models}
+
+<<, echo=T, results='asis' >>=
+admissions <- read.csv("http://www.ats.ucla.edu/stat/data/binary.csv")
+
+myols <- lm(admit ~ gre + gpa + rank, data = admissions)
+
+myprobit <- glm(admit ~ gre + gpa + rank, binomial("probit"), 
+                data = admissions)
+
+mylogit <- glm(admit ~ gre + gpa, binomial("logit"), 
+                data = admissions)
+@
+
+<<, echo=T, results='asis' >>=
+stargazer(myols, myprobit, mylogit,
+          keep = setdiff(names(myols$coefficients),"(Intercept)"), 
+          covariate.labels = c("GRE score","GPA score","Rank in class"),
+          omit.stat = c("f", "adj.rsq", "ser","aic","ll"),
+          dep.var.labels = c("Admissions decision"),
+          add.lines = list(c("Some control","Y","Y","Y")),
+          style="default",
+          intercept.bottom = F,
+          intercept.top = F,
+          title="Regression Outputs")
+@
+
+
+
+\newpage
+\section{Summary tables and custom tables}
+
+Summary tables:
+
+<<summaryStats, echo=T, results='asis' >>=
+
+nice_labels = c("Miles/(US) gallon",
+                "Cylinders",
+                "Displacement",
+                "Gross horsepower",
+                "Drat",
+                "Weight (lb/1000)", 
+                "1/4 mile time", 
+                "V/S", 
+                "Is automatic",
+                "Gears",
+                "Carburetors")
+
+stargazer(mtcars, summary.stat = c("mean","sd"), 
+                  covariate.labels=nice_labels)
+@
+
+You an also output any data frame you want  by passing the 'summary=FALSE' argument.
+
+<<dataFrame, echo=T, results='asis' >>=
+stargazer(Duncan[1:15,], summary=FALSE)
+@
+
+\section{Short texreg example}
+\newpage
+
+<<, echo=T, results='asis', message=FALSE,warning=FALSE >>=
+library(texreg)
+@
+
+<<, echo=T, results='asis' >>=
+texreg(lm1, 
+       dcolumn = TRUE, booktabs = TRUE, use.packages=F,
+       stars = c(0.1,0.05,0.01),
+       include.adjrs = FALSE,
+       omit.coef = "Interc",
+       custom.coef.names = c("Intercept","Income","Income$^2$")
+       )
+
+@
+
+\end{document}
