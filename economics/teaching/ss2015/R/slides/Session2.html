@@ -156,6 +156,8 @@ y</code></pre>
 <pre class="r"><code>y[c(&quot;nums&quot;)] #returns a list of length one</code></pre>
 <pre><code>## $nums
 ## [1] 1 2 3 4</code></pre>
+<pre class="r"><code>y[[c(&quot;nums&quot;)]] # returns a vector</code></pre>
+<pre><code>## [1] 1 2 3 4</code></pre>
 <p>You can access/set the names of list elements using the <code>names</code> function:</p>
 <pre class="r"><code>names(y)</code></pre>
 <pre><code>## [1] &quot;nums&quot;    &quot;letters&quot; &quot;roman&quot;</code></pre>
@@ -235,7 +237,7 @@ str(sum, give.attr=F)</code></pre>
 ## 9         9    IX
 ## 10       10     X</code></pre>
 <p>We can use what we learnt about matrix subsetting on data frames too:</p>
-<pre class="r"><code>nums[1:3,] #first three rows all columns</code></pre>
+<pre class="r"><code>nums[1:3,] #first three rows, all columns</code></pre>
 <pre><code>##   numerals roman letters
 ## 1        1     I       a
 ## 2        2    II       b
@@ -256,6 +258,13 @@ str(sum, give.attr=F)</code></pre>
 ## 10       10     X</code></pre>
 <pre class="r"><code>nums$numerals &gt; 5</code></pre>
 <pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
+<pre class="r"><code>nums[nums$numerals &gt; 5, ]</code></pre>
+<pre><code>##    numerals roman letters
+## 6         6    VI       f
+## 7         7   VII       g
+## 8         8  VIII       h
+## 9         9    IX       i
+## 10       10     X       j</code></pre>
 <pre class="r"><code>#install.packages(stringr)
 library(stringr)
 nums[nums$numerals &gt; 5 &amp; str_detect(nums$roman,&quot;V&quot;),]</code></pre>
@@ -290,7 +299,8 @@ nums</code></pre>
 ## 8         8 missing       h
 ## 9         9      IX       i
 ## 10       10       X       j</code></pre>
-<pre class="r"><code>nums$roman &lt;- ifelse(nums$roman == &quot;missing&quot;, &quot;Missing&quot;, nums$roman)
+<pre class="r"><code>#alternative method using ifelse
+nums$roman &lt;- ifelse(nums$roman == &quot;missing&quot;, &quot;Missing&quot;, nums$roman)
 nums</code></pre>
 <pre><code>##    numerals   roman letters
 ## 1        -1       I       a
@@ -417,7 +427,7 @@ apply(z, MARGIN = c(1,2), FUN=binarize, threshold=3)</code></pre>
 <h1>More Matrices: Exercises</h1>
 <div id="exercise-1" class="section level3">
 <h3>Exercise 1</h3>
-<p>Construct the following matrix in R, and then use <code>apply</code> function to find the square roots of its row-wise sums:</p>
+<p>Construct the following matrix in R, and then use the <code>apply</code> function to find the square roots of its row-wise sums:</p>
 <p><span class="math">\[
 \begin{matrix}
 1 &amp; 5 &amp; 9 &amp; 13 \\
@@ -508,31 +518,31 @@ t</code></pre>
 <pre class="r"><code>t &lt;- list(23,6,4,9)
 lapply(t,sample)</code></pre>
 <pre><code>## [[1]]
-##  [1] 18  8  3 22 10 14 11 19 15  9 17 23  6  4 20  2  5 13 12 16  1 21  7
+##  [1]  3  8 21 12 16  2 11  1  4  9  7 23 14 22 13 20 18 15 17  5 10 19  6
 ## 
 ## [[2]]
-## [1] 5 2 6 1 3 4
+## [1] 2 3 4 1 5 6
 ## 
 ## [[3]]
-## [1] 2 1 3 4
+## [1] 1 3 2 4
 ## 
 ## [[4]]
-## [1] 5 1 6 8 9 2 7 3 4</code></pre>
+## [1] 3 2 7 4 5 6 1 8 9</code></pre>
 <pre class="r"><code>#same thing but with vectors:
 
 t &lt;- c(23,6,4,9)
 lapply(t,sample)</code></pre>
 <pre><code>## [[1]]
-##  [1] 19 21  4 11 18  2 14  8  9 12  1 16 20 10  5 13 15  3 17 23  6  7 22
+##  [1]  8 10 14 18 11  1  7 22 13 23  5 21 19 17  6  4 16 12  2 20  3  9 15
 ## 
 ## [[2]]
-## [1] 1 4 5 2 6 3
+## [1] 4 5 3 1 6 2
 ## 
 ## [[3]]
-## [1] 1 2 4 3
+## [1] 2 3 4 1
 ## 
 ## [[4]]
-## [1] 9 4 5 6 2 1 8 3 7</code></pre>
+## [1] 9 8 4 1 7 5 2 6 3</code></pre>
 <p><code>sapply</code> is a convenient wrapper around lapply which ‘simplifies’ the output from a list into a data frame (or vector, if only a single column). Let’s extract all the numeric columns from the cars dataset.</p>
 <pre class="r"><code>lapply(cars, is.numeric)</code></pre>
 <pre><code>## $model
