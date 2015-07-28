@@ -72,10 +72,12 @@ img {
 <li><a href="#data-frames-code">Data Frames: Code</a></li>
 <li><a href="#data-frames-exercices">Data Frames: Exercices</a></li>
 <li><a href="#more-matrices-apply-function">More Matrices: <code>apply</code> function</a></li>
-<li><a href="#more-matrices-exercise">More Matrices: Exercise</a></li>
-<li><a href="#lapply-and-sapply">lapply and sapply</a></li>
+<li><a href="#more-matrices-exercises">More Matrices: Exercises</a></li>
+<li><a href="#lapply-and-sapply-code">lapply and sapply: Code</a></li>
 <li><a href="#lapply-and-sapply-exercise">lapply and sapply: Exercise</a></li>
-<li><a href="#reading-csv-data-and-factors">Reading CSV data and factors</a></li>
+<li><a href="#reading-external-data-and-factors">Reading external data and factors</a></li>
+<li><a href="#debugging">Debugging</a></li>
+<li><a href="#debugging-exercises">Debugging: Exercises</a></li>
 </ul>
 </div>
 
@@ -174,7 +176,7 @@ y</code></pre>
 sum &lt;- summary(reg)
 str(sum, give.attr=F)</code></pre>
 <pre><code>## List of 11
-##  $ call         : language lm(formula = GNP ~ Population +      Employed, data = longley)
+##  $ call         : language lm(formula = GNP ~ Population + Employed, data = longley)
 ##  $ terms        :Classes 'terms', 'formula' length 3 GNP ~ Population + Employed
 ##  $ residuals    : Named num [1:16] -11.689 -4.551 -4.691 0.218 11.274 ...
 ##  $ coefficients : num [1:3, 1:4] -1372.095 8.556 11.561 36.141 0.984 ...
@@ -186,14 +188,10 @@ str(sum, give.attr=F)</code></pre>
 ##  $ fstatistic   : Named num [1:3] 1352 2 13
 ##  $ cov.unscaled : num [1:3, 1:3] 23.9488 0.1211 -0.5834 0.1211 0.0177 ...</code></pre>
 <pre class="r"><code>sum$coefficients</code></pre>
-<pre><code>##                 Estimate Std. Error
-## (Intercept) -1372.095356  36.140646
-## Population      8.556108   0.983721
-## Employed       11.560564   1.948441
-##                t value     Pr(&gt;|t|)
-## (Intercept) -37.965435 1.050873e-14
-## Population    8.697698 8.849592e-07
-## Employed      5.933238 4.958268e-05</code></pre>
+<pre><code>##                 Estimate Std. Error    t value     Pr(&gt;|t|)
+## (Intercept) -1372.095356  36.140646 -37.965435 1.050873e-14
+## Population      8.556108   0.983721   8.697698 8.849592e-07
+## Employed       11.560564   1.948441   5.933238 4.958268e-05</code></pre>
 </div>
 <div id="data-frames" class="section level1">
 <h1>Data Frames</h1>
@@ -257,8 +255,7 @@ str(sum, give.attr=F)</code></pre>
 ## 9         9    IX
 ## 10       10     X</code></pre>
 <pre class="r"><code>nums$numerals &gt; 5</code></pre>
-<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE  TRUE
-##  [7]  TRUE  TRUE  TRUE  TRUE</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
 <pre class="r"><code>#install.packages(stringr)
 library(stringr)
 nums[nums$numerals &gt; 5 &amp; str_detect(nums$roman,&quot;V&quot;),]</code></pre>
@@ -322,28 +319,17 @@ nums</code></pre>
 ## 10       10       X       j       J</code></pre>
 <p>or create a new dataframe:</p>
 <pre class="r"><code>cbind(nums, letters_reversed = LETTERS[10:1])</code></pre>
-<pre><code>##    numerals   roman letters LETTERS
-## 1        -1       I       a       A
-## 2        -1      II       b       B
-## 3        -1     III       c       C
-## 4         4 Missing       d       D
-## 5         5 Missing       e       E
-## 6         6 Missing       f       F
-## 7         7 Missing       g       G
-## 8         8 Missing       h       H
-## 9         9      IX       i       I
-## 10       10       X       j       J
-##    letters_reversed
-## 1                 J
-## 2                 I
-## 3                 H
-## 4                 G
-## 5                 F
-## 6                 E
-## 7                 D
-## 8                 C
-## 9                 B
-## 10                A</code></pre>
+<pre><code>##    numerals   roman letters LETTERS letters_reversed
+## 1        -1       I       a       A                J
+## 2        -1      II       b       B                I
+## 3        -1     III       c       C                H
+## 4         4 Missing       d       D                G
+## 5         5 Missing       e       E                F
+## 6         6 Missing       f       F                E
+## 7         7 Missing       g       G                D
+## 8         8 Missing       h       H                C
+## 9         9      IX       i       I                B
+## 10       10       X       j       J                A</code></pre>
 <p>Add rows together (‘append’ in Stata) using <code>rbind</code>:</p>
 <pre class="r"><code>rbind(nums[nums$numerals &gt; 8, ], nums[nums$numerals &lt; 3, ])</code></pre>
 <pre><code>##    numerals roman letters LETTERS
@@ -354,8 +340,7 @@ nums</code></pre>
 ## 5        -1   III       c       C</code></pre>
 <p>Access column names using <code>names</code>:</p>
 <pre class="r"><code>names(nums)</code></pre>
-<pre><code>## [1] &quot;numerals&quot; &quot;roman&quot;    &quot;letters&quot; 
-## [4] &quot;LETTERS&quot;</code></pre>
+<pre><code>## [1] &quot;numerals&quot; &quot;roman&quot;    &quot;letters&quot;  &quot;LETTERS&quot;</code></pre>
 <pre class="r"><code>names(nums)[1] &lt;- &quot;Numerals&quot; #fragile!</code></pre>
 <p>Delete a column by setting it to NULL:</p>
 <pre class="r"><code>nums$letters &lt;- NULL
@@ -428,11 +413,11 @@ apply(z, MARGIN = c(1,2), FUN=binarize, threshold=3)</code></pre>
 ## [2,]    0    1    0    0
 ## [3,]    1    0    0    1</code></pre>
 </div>
-<div id="more-matrices-exercise" class="section level1">
-<h1>More Matrices: Exercise</h1>
-<ol style="list-style-type: decimal">
-<li>Construct the following matrix in R, and then use <code>apply</code> function to find the square roots of its row-wise sums:</li>
-</ol>
+<div id="more-matrices-exercises" class="section level1">
+<h1>More Matrices: Exercises</h1>
+<div id="exercise-1" class="section level2">
+<h2>Exercise 1</h2>
+<p>Construct the following matrix in R, and then use <code>apply</code> function to find the square roots of its row-wise sums:</p>
 <p><span class="math">\[
 \begin{matrix}
 1 &amp; 5 &amp; 9 &amp; 13 \\
@@ -442,9 +427,10 @@ apply(z, MARGIN = c(1,2), FUN=binarize, threshold=3)</code></pre>
 \end{matrix}
 \]</span></p>
 <p>Hint: look back at Session 1 materials on matrix construction.</p>
-<ol start="2" style="list-style-type: decimal">
-<li>(harder!) Write a function to find the most ‘deviant’ entry in each row of a matrix. The most deviant observation is that furthest from the median. The function should be called <code>most_deviant</code> and take a single argument, which will be a matrix. Test it using the <code>z</code> matrix we created above:</li>
-</ol>
+</div>
+<div id="exercise-2-harder" class="section level2">
+<h2>Exercise 2 (harder!)</h2>
+<p>Write a function to find the most ‘deviant’ entry in each row of a matrix. The most deviant observation is that furthest from the median. The function should be called <code>most_deviant</code> and take a single argument, which will be a matrix. Test it using the <code>z</code> matrix we created above:</p>
 <pre class="r"><code> most_deviant(z)</code></pre>
 <pre><code>## [1] 1 9 0</code></pre>
 <p>Your function should be defined like this:</p>
@@ -453,9 +439,10 @@ apply(z, MARGIN = c(1,2), FUN=binarize, threshold=3)</code></pre>
 }</code></pre>
 <p>and make use of <code>apply</code>. You will probably find the <code>which.max</code> function useful. Remember to start small and build up to the solution. Hint: begin by writing a function called <code>most_deviant_in_row</code></p>
 </div>
-<div id="lapply-and-sapply" class="section level1">
-<h1>lapply and sapply</h1>
-<p>These are really useful functions for carrying out an operation on every element of a list. Remember that data frames are actually a type of list, so if you want to do something on one or more columns, using these functions are normally the way to do it.</p>
+</div>
+<div id="lapply-and-sapply-code" class="section level1">
+<h1>lapply and sapply: Code</h1>
+<p>These are really useful functions for carrying out an operation on every element of a list or a vector. Remember that data frames are actually a type of list, so if you want to do something on one or more columns, using these functions are normally the way to do it.</p>
 <p>We’ll start by creating a list to play with.</p>
 <pre class="r"><code>l &lt;- list()
 l$a &lt;- 1
@@ -471,7 +458,7 @@ l</code></pre>
 ## 
 ## $c
 ## [1] 3</code></pre>
-<p>‘lapply’ stands for list apply. It takes every item in a list and applies a given operation on it.</p>
+<p>‘lapply’ stands for list apply. It takes every item in a list/vector and applies a given operation on it.</p>
 <pre class="r"><code>lapply(l, sin)</code></pre>
 <pre><code>## $a
 ## [1] 0.841471
@@ -496,8 +483,7 @@ t</code></pre>
 ## [1] 1 2 3 4 5 6 7
 ## 
 ## [[2]]
-##  [1]  5  6  7  8  9 10 11 12 13 14 15 16
-## [13] 17 18 19 20
+##  [1]  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
 ## 
 ## [[3]]
 ##  [1]  3  4  5  6  7  8  9 10 11 12 13 14</code></pre>
@@ -520,20 +506,33 @@ t</code></pre>
 ## [[3]]
 ## [1] 14</code></pre>
 <pre class="r"><code>t &lt;- list(23,6,4,9)
-a &lt;- lapply(t,sample)
-a</code></pre>
+lapply(t,sample)</code></pre>
 <pre><code>## [[1]]
-##  [1] 15 13  9 14  6 17 20 23  5 18  4  2
-## [13] 19 11 21 16  8  3 22  7 10  1 12
+##  [1] 15 11  9 13  5 14  8 22  7  3  1 20 19 23  2  4 17  6 10 16 18 12 21
 ## 
 ## [[2]]
-## [1] 3 2 6 1 5 4
+## [1] 4 5 6 3 1 2
 ## 
 ## [[3]]
-## [1] 4 3 2 1
+## [1] 1 3 4 2
 ## 
 ## [[4]]
-## [1] 8 6 4 7 2 5 3 1 9</code></pre>
+## [1] 6 5 3 7 1 4 9 2 8</code></pre>
+<pre class="r"><code>#same thing but with vectors:
+
+t &lt;- c(23,6,4,9)
+lapply(t,sample)</code></pre>
+<pre><code>## [[1]]
+##  [1] 10 11  2 22  9  6 21 16  5 18 17  7 19 23  3 14 13 20  1  4 15  8 12
+## 
+## [[2]]
+## [1] 6 5 2 1 3 4
+## 
+## [[3]]
+## [1] 2 3 1 4
+## 
+## [[4]]
+## [1] 5 1 6 2 4 7 9 8 3</code></pre>
 <p><code>sapply</code> is a convenient wrapper around lapply which ‘simplifies’ the output from a list into a data frame (or vector, if only a single column). Let’s extract all the numeric columns from the cars dataset.</p>
 <pre class="r"><code>lapply(cars, is.numeric)</code></pre>
 <pre><code>## $model
@@ -563,36 +562,24 @@ a</code></pre>
 ## $gear
 ## [1] TRUE</code></pre>
 <pre class="r"><code>sapply(cars, is.numeric) </code></pre>
-<pre><code>## model   mpg   cyl  disp    hp  drat 
-## FALSE  TRUE  TRUE  TRUE  TRUE  TRUE 
-##    wt    am  gear 
-##  TRUE  TRUE  TRUE</code></pre>
+<pre><code>## model   mpg   cyl  disp    hp  drat    wt    am  gear 
+## FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
 <pre class="r"><code>numeric_columns &lt;- sapply(cars, is.numeric)</code></pre>
 </div>
 <div id="lapply-and-sapply-exercise" class="section level1">
 <h1>lapply and sapply: Exercise</h1>
+<p>General advice: build up to the solutions one step at a time!</p>
 <ol style="list-style-type: decimal">
 <li><p>Use lapply to censor in each vector in the list <code>a</code> (we created <code>a</code> earlier) - replace any values greater than 10 with 10.</p></li>
-<li><p>‘standardise’ each vector in the list <code>a</code> (we created <code>a</code> earlier). Standardise a vector by dividing each element by the mean of all elements.</p></li>
+<li>‘standardise’ each vector in the list <code>a</code> (we created <code>a</code> earlier). Standardise a vector by dividing each element by the mean of all elements.</li>
 <li><p>Use sapply to find out which model ‘wins’ each category in cars (e.g. most mpg, most cyl, most carb etc). It doesn’t matter which gets picked if there is a tie. You’ll need to deal with the problem that one column contains a string, of which there is no natural ranking. The output should look something like this:</p></li>
 </ol>
-<pre><code>##                   mpg 
-##      &quot;Toyota Corolla&quot; 
-##                   cyl 
-##   &quot;Hornet Sportabout&quot; 
-##                  disp 
-##  &quot;Cadillac Fleetwood&quot; 
-##                    hp 
-##       &quot;Maserati Bora&quot; 
-##                  drat 
-##         &quot;Honda Civic&quot; 
-##                    wt 
-## &quot;Lincoln Continental&quot; 
-##                    am 
-##           &quot;Mazda RX4&quot; 
-##                  gear 
-##       &quot;Porsche 914-2&quot;</code></pre>
-<p>Hint – first figure out how to display the model which has the biggest ‘hp’, then move to on to using sapply.</p>
+<pre><code>##                   mpg                   cyl                  disp 
+##      &quot;Toyota Corolla&quot;   &quot;Hornet Sportabout&quot;  &quot;Cadillac Fleetwood&quot; 
+##                    hp                  drat                    wt 
+##       &quot;Maserati Bora&quot;         &quot;Honda Civic&quot; &quot;Lincoln Continental&quot; 
+##                    am                  gear 
+##           &quot;Mazda RX4&quot;       &quot;Porsche 914-2&quot;</code></pre>
 <p>Hint – you will probably find the <code>which.max()</code> function useful.</p>
 <ol start="4" style="list-style-type: decimal">
 <li>Run the following code.</li>
@@ -606,97 +593,218 @@ names(d) &lt;- numbers2words(1:100)</code></pre>
 <p>The first command will download a function called <code>numbers2words</code> from my website. The <code>numbers2words</code> function takes a number and returns that same number in words.</p>
 <ol style="list-style-type: lower-alpha">
 <li><p>Make sure you understand how the construction of the <code>d</code> dataframe works (run parts of each line at a time, examine output, etc.)</p></li>
-<li><p>Make a copy of <code>d</code> and then delete any column from the list which has got the word ‘two’ in its name.</p></li>
+<li><p>Make a copy of <code>d</code>. Extract any column from the list which has got the word ‘two’ in its name.</p></li>
 </ol>
 <p>Hint: you can use the <code>str_detect</code> from the <code>stringr</code> package to test if one string contains another. Install the package with <code>install.packages(&quot;stringr&quot;)</code> and use it like this:</p>
 <pre class="r"><code>library(stringr)
-str_detect(&quot;I wonder if 'apple' is in this string&quot;,&quot;apple&quot;)</code></pre>
+str_detect(&quot;I wonder if 'apple' is in this string&quot;, &quot;apple&quot;)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <ol start="3" style="list-style-type: lower-alpha">
-<li>(hard!) Make your answer to b. more general. Write a function that takes a list and a vector of strings. Return all the elements in the vector whose names dont’ match any of the strings. You should be able to use it like this:</li>
+<li>Now delete the columns from your copy of <code>d</code> which have ‘two’ in their name. You can delete multiple items from a list as follows:</li>
 </ol>
-<pre class="r"><code>removeMatchingColumns &lt;- function(l, test_strings)
-{
-  t &lt;- sapply(test_strings, function(x) { str_detect(names(l),x) })
-  l[as.logical(apply(t, 1, max))] &lt;- list(NULL)
-  l
-}</code></pre>
-<pre class="r"><code>names(removeMatchingColumns(d, c(&quot;one&quot;,&quot;two&quot;,&quot;three&quot;)))</code></pre>
-<pre><code>##  [1] &quot;four&quot;          &quot;five&quot;         
-##  [3] &quot;six&quot;           &quot;seven&quot;        
-##  [5] &quot;eight&quot;         &quot;nine&quot;         
-##  [7] &quot;ten&quot;           &quot;eleven&quot;       
-##  [9] &quot;twelve&quot;        &quot;thirteen&quot;     
-## [11] &quot;fourteen&quot;      &quot;fifteen&quot;      
-## [13] &quot;sixteen&quot;       &quot; seventeen&quot;   
-## [15] &quot;eighteen&quot;      &quot;nineteen&quot;     
-## [17] &quot;twenty&quot;        &quot;twenty four&quot;  
-## [19] &quot;twenty five&quot;   &quot;twenty six&quot;   
-## [21] &quot;twenty seven&quot;  &quot;twenty eight&quot; 
-## [23] &quot;twenty nine&quot;   &quot;thirty&quot;       
-## [25] &quot;thirty four&quot;   &quot;thirty five&quot;  
-## [27] &quot;thirty six&quot;    &quot;thirty seven&quot; 
-## [29] &quot;thirty eight&quot;  &quot;thirty nine&quot;  
-## [31] &quot;forty&quot;         &quot;forty four&quot;   
-## [33] &quot;forty five&quot;    &quot;forty six&quot;    
-## [35] &quot;forty seven&quot;   &quot;forty eight&quot;  
-## [37] &quot;forty nine&quot;    &quot;fifty&quot;        
-## [39] &quot;fifty four&quot;    &quot;fifty five&quot;   
-## [41] &quot;fifty six&quot;     &quot;fifty seven&quot;  
-## [43] &quot;fifty eight&quot;   &quot;fifty nine&quot;   
-## [45] &quot;sixty&quot;         &quot;sixty four&quot;   
-## [47] &quot;sixty five&quot;    &quot;sixty six&quot;    
-## [49] &quot;sixty seven&quot;   &quot;sixty eight&quot;  
-## [51] &quot;sixty nine&quot;    &quot;seventy&quot;      
-## [53] &quot;seventy four&quot;  &quot;seventy five&quot; 
-## [55] &quot;seventy six&quot;   &quot;seventy seven&quot;
-## [57] &quot;seventy eight&quot; &quot;seventy nine&quot; 
-## [59] &quot;eighty&quot;        &quot;eighty four&quot;  
-## [61] &quot;eighty five&quot;   &quot;eighty six&quot;   
-## [63] &quot;eighty seven&quot;  &quot;eighty eight&quot; 
-## [65] &quot;eighty nine&quot;   &quot;ninety&quot;       
-## [67] &quot;ninety four&quot;   &quot;ninety five&quot;  
-## [69] &quot;ninety six&quot;    &quot;ninety seven&quot; 
-## [71] &quot;ninety eight&quot;  &quot;ninety nine&quot;</code></pre>
-<p>This is how you delete elements from a list:</p>
 <pre class="r"><code>nums[1:2] &lt;- list(NULL)</code></pre>
-<p>6: Optional: Figure out how this line of code works:</p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>(hard!) Make your answer to b. more general. Write a function that takes a list and a vector of strings. Return all the elements in the list whose names dont’ match any of the strings. You should be able to use it like this:</li>
+</ol>
+<pre class="r"><code>names(removeMatchingColumns(d, c(&quot;one&quot;,&quot;two&quot;,&quot;three&quot;)))</code></pre>
+<pre><code>##  [1] &quot;four&quot;          &quot;five&quot;          &quot;six&quot;           &quot;seven&quot;        
+##  [5] &quot;eight&quot;         &quot;nine&quot;          &quot;ten&quot;           &quot;eleven&quot;       
+##  [9] &quot;twelve&quot;        &quot;thirteen&quot;      &quot;fourteen&quot;      &quot;fifteen&quot;      
+## [13] &quot;sixteen&quot;       &quot; seventeen&quot;    &quot;eighteen&quot;      &quot;nineteen&quot;     
+## [17] &quot;twenty&quot;        &quot;twenty four&quot;   &quot;twenty five&quot;   &quot;twenty six&quot;   
+## [21] &quot;twenty seven&quot;  &quot;twenty eight&quot;  &quot;twenty nine&quot;   &quot;thirty&quot;       
+## [25] &quot;thirty four&quot;   &quot;thirty five&quot;   &quot;thirty six&quot;    &quot;thirty seven&quot; 
+## [29] &quot;thirty eight&quot;  &quot;thirty nine&quot;   &quot;forty&quot;         &quot;forty four&quot;   
+## [33] &quot;forty five&quot;    &quot;forty six&quot;     &quot;forty seven&quot;   &quot;forty eight&quot;  
+## [37] &quot;forty nine&quot;    &quot;fifty&quot;         &quot;fifty four&quot;    &quot;fifty five&quot;   
+## [41] &quot;fifty six&quot;     &quot;fifty seven&quot;   &quot;fifty eight&quot;   &quot;fifty nine&quot;   
+## [45] &quot;sixty&quot;         &quot;sixty four&quot;    &quot;sixty five&quot;    &quot;sixty six&quot;    
+## [49] &quot;sixty seven&quot;   &quot;sixty eight&quot;   &quot;sixty nine&quot;    &quot;seventy&quot;      
+## [53] &quot;seventy four&quot;  &quot;seventy five&quot;  &quot;seventy six&quot;   &quot;seventy seven&quot;
+## [57] &quot;seventy eight&quot; &quot;seventy nine&quot;  &quot;eighty&quot;        &quot;eighty four&quot;  
+## [61] &quot;eighty five&quot;   &quot;eighty six&quot;    &quot;eighty seven&quot;  &quot;eighty eight&quot; 
+## [65] &quot;eighty nine&quot;   &quot;ninety&quot;        &quot;ninety four&quot;   &quot;ninety five&quot;  
+## [69] &quot;ninety six&quot;    &quot;ninety seven&quot;  &quot;ninety eight&quot;  &quot;ninety nine&quot;</code></pre>
+<p>This is how you delete multiple elements from a list:</p>
+<pre class="r"><code>nums[1:2] &lt;- list(NULL)</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Figure out how this line of code works:</li>
+</ol>
 <pre class="r"><code>manufacturer &lt;- sapply(strsplit(cars[,&quot;model&quot;],split=&quot; &quot;),&quot;[&quot;,1) </code></pre>
 </div>
-<div id="reading-csv-data-and-factors" class="section level1">
-<h1>Reading CSV data and factors</h1>
-<p>Download the ‘iris.csv’ dataset from <a href="http://markwestcott34.github.io/Economics/Teaching/WS2015/R/datasets/iris.csv" class="uri">http://markwestcott34.github.io/Economics/Teaching/WS2015/R/datasets/iris.csv</a> and store it somewhere on your PC</p>
+<div id="reading-external-data-and-factors" class="section level1">
+<h1>Reading external data and factors</h1>
+<p>Download the ‘iris.csv’ dataset from <a href="http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/iris.csv" class="uri">http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/iris.csv</a> and store it somewhere on your PC</p>
 <p>Use the <code>setwd()</code> function to set the working directory to the folder that contains the file, e.g.</p>
 <pre class="r"><code>setwd(&quot;/Users/mark/tresor/Economics/Teaching/R/materials/session2&quot;)</code></pre>
-<p>Note that you can also do this using the ‘Files’ tab in the bottom right of RStudio.</p>
-<p>This is the function prototype for the <code>read.csv</code> function:</p>
+<p>You can also do this using the ‘Files’ tab in the bottom right of RStudio. Note the need for forward slashes or double backslashes:</p>
+<pre class="r"><code>setwd(&quot;C:\\Users\\Mark\\Documents and Settings\\R\\&quot;) #correct 
+setwd(&quot;C:/Users/Mark/Documents and Settings/R/&quot;) #correct 
+setwd(&quot;C:\Users\Mark\Documents and Settings\R\&quot;) #wrong </code></pre>
+<p>So you can read in a csv file with <code>read_csv</code> from the <code>readr</code> package:</p>
+<pre class="r"><code>#install.packages(readr)
+library(readr)
+setwd(&quot;/Users/mark/tresor/Economics/Teaching/R/materials/session2&quot;)
+iris &lt;- read_csv(&quot;iris.csv&quot;)</code></pre>
+<p>I recommend this approach over the <code>read.csv</code> method from <code>base</code> R:</p>
 <pre class="r"><code>read.csv(file, header = TRUE, sep = &quot;,&quot;, quote = &quot;\&quot;&quot;,
          dec = &quot;.&quot;, fill = TRUE, comment.char = &quot;&quot;, ...)</code></pre>
-<p>So you can read in a csv file with:</p>
-<pre class="r"><code>setwd(&quot;/Users/mark/tresor/Economics/Teaching/R/materials/session2&quot;)
-iris &lt;- read.csv(&quot;iris.csv&quot;)</code></pre>
-<p>But actually, you will often want to <em>pass the <code>stringsAsFactors=false</code> argument</em> too. By doing so, we are telling R not to convert strings to factors. Factors are like labelled variables in Stata and they are often (but not always..) a pain.</p>
+<p>Here, you normally need to remember to pass the <code>stringsAsFactors=FALSE</code> argument. By doing so, we are telling R not to convert strings to factors. Factors are like labelled variables in Stata and they are often (but not always..) a pain.</p>
 <pre class="r"><code>setwd(&quot;/Users/mark/tresor/Economics/Teaching/R/materials/session2&quot;)
 
 iris &lt;- read.csv(&quot;iris.csv&quot;)
 class(iris$species)</code></pre>
 <pre><code>## [1] &quot;factor&quot;</code></pre>
 <pre class="r"><code>head(iris$species , n = 20)</code></pre>
-<pre><code>##  [1] setosa setosa setosa setosa setosa
-##  [6] setosa setosa setosa setosa setosa
-## [11] setosa setosa setosa setosa setosa
-## [16] setosa setosa setosa setosa setosa
-## 3 Levels: setosa ... virginica</code></pre>
+<pre><code>##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa
+## [11] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa
+## Levels: setosa versicolor virginica</code></pre>
 <pre class="r"><code>levels(iris$species)</code></pre>
-<pre><code>## [1] &quot;setosa&quot;     &quot;versicolor&quot;
-## [3] &quot;virginica&quot;</code></pre>
+<pre><code>## [1] &quot;setosa&quot;     &quot;versicolor&quot; &quot;virginica&quot;</code></pre>
 <pre class="r"><code>iris &lt;- read.csv(&quot;iris.csv&quot;, stringsAsFactors=F)
 class(iris$species)</code></pre>
 <pre><code>## [1] &quot;character&quot;</code></pre>
 <pre class="r"><code>head(iris$species)</code></pre>
-<pre><code>## [1] &quot;setosa&quot; &quot;setosa&quot; &quot;setosa&quot; &quot;setosa&quot;
-## [5] &quot;setosa&quot; &quot;setosa&quot;</code></pre>
-<p>You can read Stata files in using <code>read_stata</code> from the <code>haven</code> package, which also privides functions to read SPSS/SAS. There are lots of functions to read Excel files. I have found <code>read.xls</code> from the <code>gdata</code> package to work the best.</p>
+<pre><code>## [1] &quot;setosa&quot; &quot;setosa&quot; &quot;setosa&quot; &quot;setosa&quot; &quot;setosa&quot; &quot;setosa&quot;</code></pre>
+<p>You can read Stata files in using <code>read_stata</code> from the <code>haven</code> package, which also provides functions to read SPSS/SAS.</p>
+<p>For reading Excel files use the <code>read_excel</code> function from the <code>readxl</code> package.</p>
+</div>
+<div id="debugging" class="section level1">
+<h1>Debugging</h1>
+<p>Debugging is the art of finding and squashing bugs in your code. This is somewhere I think Stata is really weak. The debugging features in R allow you to ‘step through’ code one line at a time, set ‘breakpoints’, and examine the contents of variables.</p>
+<pre class="r"><code>rm(list = ls())
+
+x &lt;- 3
+x &lt;- 4
+
+sqrtPlusFour &lt;- function(z) {
+  sqrt(z+4)
+}
+
+if (x == 3) {
+  print(&quot;x is 3&quot;)
+} else {
+  p &lt;- (x^2)-4
+  y &lt;- sqrtPlusFour(p)
+  y
+}</code></pre>
+<pre><code>## [1] 4</code></pre>
+<pre class="r"><code>#sqrtPlusFour(&quot;hi&quot;)</code></pre>
+<p>RStudio automatically shows the ‘call stack’ in the Traceback window. Copy the following code into a new file, save and ‘Source’ it:</p>
+<pre class="r"><code>f &lt;- function(x) { 
+  g(x)
+}
+
+g &lt;- function(y) {
+  h(y) 
+}
+
+h &lt;- function(z) {
+  &quot;a&quot; - z
+}
+
+f(10)</code></pre>
+</div>
+<div id="debugging-exercises" class="section level1">
+<h1>Debugging: Exercises</h1>
+<div id="exercise-1-1" class="section level2">
+<h2>Exercise 1</h2>
+<p>Here is a buggy function, <code>findruns</code>. The aim of the function is to find all k-length sequences of 1s in a vector, e.g:</p>
+<pre class="r"><code>findruns( c(1,1), k = 2)</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>findruns( c(1,1,0,1,1), k = 2)</code></pre>
+<pre><code>## [1] 1 4</code></pre>
+<pre class="r"><code>findruns( c(0,1,1,0,0), k = 2)</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>findruns( c(1,1,0,0,0,0,1,1,1), k = 2)</code></pre>
+<pre><code>## [1] 1 7 8</code></pre>
+<pre class="r"><code>findruns( c(1,1,0,0,0,0,1,1,1), k = 3)</code></pre>
+<pre><code>## [1] 7</code></pre>
+<p>Here’s some buggy code for the function:</p>
+<pre class="r"><code>findruns &lt;- function(x,k) {
+   n &lt;- length(x)
+   runs &lt;- NULL
+   for (i in 1:(n-k)) {
+     if (all(x[i:i+k-1]==1))
+       runs &lt;- c(runs,i)
+   }
+   return(runs) 
+}</code></pre>
+<p>As you’ll see, the function doesn’t work correctly:</p>
+<pre class="r"><code>findruns(c(1,0,0,1,1,0,1,1,1),2) #should return 4,7,8</code></pre>
+<pre><code>## [1] 3 4 6 7</code></pre>
+<p>Use the debugger to find and fix the problem(s) in the code.</p>
+</div>
+<div id="exercise-2" class="section level2">
+<h2>Exercise 2</h2>
+<p>This exercise is based on one in Matloff (2009).</p>
+<p>The <code>mind</code> function is designed to efficiently find the lowest entry in a distance matrix. A distance matrix is a symmetric matrix, where <code>q[i,j]</code> represents the absolute distance between cities <code>i</code> and <code>j</code>.</p>
+<p><span class="math">\[
+\begin{pmatrix}
+ &amp;       London &amp; Munich &amp; Montreal &amp; Frankfurt \\
+London    &amp; 0    &amp; 916 &amp; 5219 &amp; 636    \\
+Munich    &amp; 916  &amp; 0   &amp; 6133 &amp; 303    \\
+Montreal  &amp; 5219 &amp; 6133 &amp; 0    &amp; 5841   \\
+Frankfurt &amp; 636  &amp;  303   &amp; 5841 &amp;  0
+\end{pmatrix}
+\]</span></p>
+<p><code>mind</code> is a function which, given a distance matrix, should find the two cities which are closest to each other and return a vector of three elements: that minimum distance, and the ids of those cities. For example,</p>
+<pre class="r"><code>q &lt;- rbind(c(0,12,13,8,20),
+           c(12,0,15,28,88),
+           c(13,15,0,6,9),
+           c(8,28,6,0,33),
+           c(20,88,9,33,0))
+q</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    0   12   13    8   20
+## [2,]   12    0   15   28   88
+## [3,]   13   15    0    6    9
+## [4,]    8   28    6    0   33
+## [5,]   20   88    9   33    0</code></pre>
+<pre class="r"><code>mind(q)</code></pre>
+<pre><code>## [1] 6 3 4</code></pre>
+<p>Here is some code for the <code>mind()</code> function. Use the debugger to figure out how it is meant to work, and fix the bugs! When working out how the function should work, remember that the distance matrix is symmetrical.</p>
+<pre class="r"><code>imin &lt;- function(x) {
+  lx &lt;- length(x)
+  
+  i &lt;- x[lx] #number of row from original matrix
+  
+  # find the minimum entry in the part of the row corresponding to the upper-right triangle 
+  j &lt;- which.min(x[(i+1):(lx-1)])
+
+  #return the position of the entry and the value
+  return( c(j, x[j]) )
+}
+
+mind &lt;- function(d) {
+   
+   #make sure we are being passed a symetric matrix
+   stopifnot(isSymmetric.matrix(d))
+   n &lt;- nrow(d)
+   
+   #add a column to the matrix which identifies the row number
+   dd &lt;- cbind(d,1:n)
+   
+   #find the minimum value and position of that value in each row (apart from the last)
+   wmins &lt;- apply(dd[-n,],1,imin)
+   
+   #wmins now contains two rows
+   #row 1 are indices to the lowest value of each original row
+   #row 2 the actual value
+   
+   #now find which original row contained the overall lowest number
+   i &lt;- which.min(wmins[1,])
+   
+   #and the lowest number in that row
+   j &lt;- wmins[2,i]
+   
+   #return the overall minimum value and the position in the matrix  
+   return(c(d[i,j],i,j))
+ }
+
+mind(q)</code></pre>
+<pre><code>## Error in d[i, j]: subscript out of bounds</code></pre>
+</div>
 </div>
 
 
