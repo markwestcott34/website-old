@@ -82,7 +82,7 @@ img {
 
 <div id="do.call---loading-in-multiple-data-files" class="section level1">
 <h1><code>do.call</code> - loading in multiple data files</h1>
-<p>Download <a href="http://markwestcott34.github.io/Economics/Teaching/WS2015/R/datasets/multiple.zip" class="uri">http://markwestcott34.github.io/Economics/Teaching/WS2015/R/datasets/multiple.zip</a> and move all the .DTA files into a new empty folder somewhere</p>
+<p>Download <a href="http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/multiple.zip" class="uri">http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/multiple.zip</a> and move all the .DTA files into a new empty folder somewhere</p>
 <pre class="r"><code>setwd(&quot;/Users/mark/tresor/Economics/Teaching/R/materials/session3&quot;)
 #setwd(&quot;C:\\Users\\Mark.Westcott\\Documents\\My Tresors\\Main\\Economics\\Teaching\\R\\materials\\session3&quot;)
 library(haven)
@@ -389,8 +389,8 @@ coeftest(m1, boot_year_vcov)</code></pre>
 ## t test of coefficients:
 ## 
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.029680   0.054956  0.5401   0.5892    
-## x           1.034833   0.064718 15.9898   &lt;2e-16 ***
+## (Intercept) 0.029680   0.054983  0.5398   0.5894    
+## x           1.034833   0.061377 16.8604   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1088,11 +1088,11 @@ flights %&gt;% sample_n(5)</code></pre>
 <pre><code>## Source: local data frame [5 x 22]
 ## 
 ##   Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1 2011     9         22         4    1854    2230            CO      1654
-## 2 2011     8         19         5    1020    1328            OO      5841
-## 3 2011     9         26         1    1329    1649            CO      1619
-## 4 2011     7         18         1    1122    1244            XE      2482
-## 5 2011     2          9         3     907    1041            CO       497
+## 1 2011     4         15         5     758     911            WN      1076
+## 2 2011     6         10         5     839    1137            FL       298
+## 3 2011     6         11         6    1040    1456            CO       358
+## 4 2011    10         21         5    1443    1653            CO      1571
+## 5 2011     8         12         5    1859    2128            CO       860
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
 ##   Distance (int), TaxiIn (int), TaxiOut (int), Cancelled (int),
@@ -1102,16 +1102,16 @@ flights %&gt;% sample_frac(0.25, replace=TRUE)</code></pre>
 <pre><code>## Source: local data frame [56,874 x 22]
 ## 
 ##    Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1  2011     3          8         2    1411    1710            XE      2334
-## 2  2011    12         11         7    2046    2232            OO      5217
-## 3  2011    11         22         2    1349    1804            CO      1559
-## 4  2011     5         31         2    1411    1717            XE      2700
-## 5  2011    10         15         6    1303    1432            XE      4144
-## 6  2011     2         14         1    1143    1240            CO       741
-## 7  2011     2         26         6    2116    2217            XE      2131
-## 8  2011    11         25         5    1228    1420            XE      4671
-## 9  2011     3          4         5    1128    1344            CO       270
-## 10 2011    12          2         5    1530    1618            WN       405
+## 1  2011    12         11         7    1726    1840            OO      5159
+## 2  2011     5         13         5      NA      NA            XE      2612
+## 3  2011     4         23         6    1428    1523            XE      2591
+## 4  2011     4         11         1    2105    2314            XE      2976
+## 5  2011     5         29         7    1123    1327            CO       270
+## 6  2011     6         25         6    1648    1805            XE      2920
+## 7  2011    12         22         4    1517    1701            XE      4577
+## 8  2011     5         29         7     853    1015            XE      2967
+## 9  2011     8         29         1    1857    1951            WN        52
+## 10 2011     5         22         7    1128    1230            XE      2895
 ## ..  ...   ...        ...       ...     ...     ...           ...       ...
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
@@ -1416,20 +1416,20 @@ pew</code></pre>
 
 a</code></pre>
 <pre><code>##   SessionRoom outcome
-## 1   Morning:1       4
+## 1   Morning:1       2
 ## 2   Morning:2       3
 ## 3   Morning:3       1
-## 4   Evening:1       2
-## 5   Evening:2       5
-## 6   Evening:3       6</code></pre>
+## 4   Evening:1       5
+## 5   Evening:2       6
+## 6   Evening:3       4</code></pre>
 <pre class="r"><code>separate(data = a, col = SessionRoom, into = c(&quot;Time&quot;,&quot;Room&quot;), sep=&quot;:&quot;)</code></pre>
 <pre><code>##      Time Room outcome
-## 1 Morning    1       4
+## 1 Morning    1       2
 ## 2 Morning    2       3
 ## 3 Morning    3       1
-## 4 Evening    1       2
-## 5 Evening    2       5
-## 6 Evening    3       6</code></pre>
+## 4 Evening    1       5
+## 5 Evening    2       6
+## 6 Evening    3       4</code></pre>
 <p>Spread:</p>
 <pre class="r"><code> results &lt;- data.frame(
      Individual = 1:5,
@@ -1439,33 +1439,33 @@ a</code></pre>
 
 results</code></pre>
 <pre><code>##    Individual Treatment Payoff
-## 1           1         A      9
-## 2           2         A      5
-## 3           3         A     17
-## 4           4         A     13
-## 5           5         A      6
-## 6           1         B     15
-## 7           2         B      4
-## 8           3         B     14
-## 9           4         B     19
-## 10          5         B     12
-## 11          1         C     18
-## 12          2         C      1
-## 13          3         C     20
-## 14          4         C     11
-## 15          5         C      2
-## 16          1         D      8
-## 17          2         D     10
-## 18          3         D      7
-## 19          4         D      3
-## 20          5         D     16</code></pre>
+## 1           1         A      8
+## 2           2         A     13
+## 3           3         A     12
+## 4           4         A     20
+## 5           5         A     10
+## 6           1         B      9
+## 7           2         B     11
+## 8           3         B      3
+## 9           4         B      5
+## 10          5         B     18
+## 11          1         C      4
+## 12          2         C     15
+## 13          3         C      7
+## 14          4         C     17
+## 15          5         C      6
+## 16          1         D     16
+## 17          2         D     19
+## 18          3         D      1
+## 19          4         D      2
+## 20          5         D     14</code></pre>
 <pre class="r"><code>spread(data = results, key = Treatment,value = Payoff)</code></pre>
 <pre><code>##   Individual  A  B  C  D
-## 1          1  9 15 18  8
-## 2          2  5  4  1 10
-## 3          3 17 14 20  7
-## 4          4 13 19 11  3
-## 5          5  6 12  2 16</code></pre>
+## 1          1  8  9  4 16
+## 2          2 13 11 15 19
+## 3          3 12  3  7  1
+## 4          4 20  5 17  2
+## 5          5 10 18  6 14</code></pre>
 </div>
 <div id="tidyr-exercises" class="section level1">
 <h1>Tidyr exercises</h1>
