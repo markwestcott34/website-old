@@ -73,10 +73,10 @@ img {
 <li><a href="#dplyr-exercises">dplyr exercises</a></li>
 <li><a href="#dplyr-joins">dplyr joins</a></li>
 <li><a href="#tidying-reshaping-data-with-the-tidyr-package">Tidying (reshaping) data with the tidyr package</a></li>
-<li><a href="#exercise-how-does-this-work">Exercise: How does this work?</a></li>
-<li><a href="#broom-package">broom package</a></li>
-<li><a href="#exercise---what-does-this-code-do">Exercise - what does this code do?</a></li>
-<li><a href="#exercise---loading-and-merging-a-messy-data-structure">Exercise - loading and merging a messy data structure</a></li>
+<li><a href="#tidyr-exercises">Tidyr exercises</a></li>
+<li><a href="#broom-package-code">broom package: Code</a></li>
+<li><a href="#broom-package-exercise">broom Package: Exercise</a></li>
+<li><a href="#exercise-tying-it-all-together">Exercise: Tying it all together</a></li>
 </ul>
 </div>
 
@@ -357,7 +357,7 @@ coeftest(public_schools_r, vc_homo) #same thing as coeftest(public_schools_r)</c
 </div>
 <div id="mini-exercise" class="section level2">
 <h2>Mini exercise:</h2>
-<p>Create a dataframe which shows the results of the public schools regression with two different standard error types. It should show for example the results from the HC3 and the HC1 tests on top of each other, without the intercept row, and with a new column which indicates which model the estimates came from.</p>
+<p>Create a dataframe which shows the results of the public schools regression with two different standard error types. It should show the results from the HC3 and the HC1 tests on top of each other, without the intercept row, and with a new column which indicates which model the estimates came from.</p>
 </div>
 <div id="clustered-standard-errors" class="section level2">
 <h2>Clustered standard errors</h2>
@@ -389,8 +389,8 @@ coeftest(m1, boot_year_vcov)</code></pre>
 ## t test of coefficients:
 ## 
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.029680   0.054257   0.547   0.5844    
-## x           1.034833   0.067316  15.373   &lt;2e-16 ***
+## (Intercept) 0.029680   0.054956  0.5401   0.5892    
+## x           1.034833   0.064718 15.9898   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1088,11 +1088,11 @@ flights %&gt;% sample_n(5)</code></pre>
 <pre><code>## Source: local data frame [5 x 22]
 ## 
 ##   Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1 2011     6          2         4     932    1048            WN       494
-## 2 2011     6          4         6     736    1101            CO      1590
-## 3 2011     2         27         7     719    1129            CO       776
-## 4 2011     6         20         1    1052    1413            XE      2652
-## 5 2011     4         29         5    1547    1912            US      1978
+## 1 2011     9         22         4    1854    2230            CO      1654
+## 2 2011     8         19         5    1020    1328            OO      5841
+## 3 2011     9         26         1    1329    1649            CO      1619
+## 4 2011     7         18         1    1122    1244            XE      2482
+## 5 2011     2          9         3     907    1041            CO       497
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
 ##   Distance (int), TaxiIn (int), TaxiOut (int), Cancelled (int),
@@ -1102,16 +1102,16 @@ flights %&gt;% sample_frac(0.25, replace=TRUE)</code></pre>
 <pre><code>## Source: local data frame [56,874 x 22]
 ## 
 ##    Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1  2011    11         18         5    1401    1811            CO      1699
-## 2  2011     7          1         5    1558    2044            CO      1594
-## 3  2011    10         15         6    1748    1843            CO      1709
-## 4  2011     3          4         5    1839    1944            MQ      2870
-## 5  2011     5         23         1     857    1323            CO       510
-## 6  2011     1         24         1     648     901            WN       676
-## 7  2011     4         19         2    1933    2308            CO      1830
-## 8  2011     7          6         3    1926    2042            OO      1155
-## 9  2011    10          6         4    1550    1828            XE      4635
-## 10 2011     5         17         2    1929    2237            XE      2253
+## 1  2011     3          8         2    1411    1710            XE      2334
+## 2  2011    12         11         7    2046    2232            OO      5217
+## 3  2011    11         22         2    1349    1804            CO      1559
+## 4  2011     5         31         2    1411    1717            XE      2700
+## 5  2011    10         15         6    1303    1432            XE      4144
+## 6  2011     2         14         1    1143    1240            CO       741
+## 7  2011     2         26         6    2116    2217            XE      2131
+## 8  2011    11         25         5    1228    1420            XE      4671
+## 9  2011     3          4         5    1128    1344            CO       270
+## 10 2011    12          2         5    1530    1618            WN       405
 ## ..  ...   ...        ...       ...     ...     ...           ...       ...
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
@@ -1328,11 +1328,12 @@ left_join(nyc_flights, planes)</code></pre>
 <li>Multiple variables in one column</li>
 <li>Variables in <em>both</em> rows and columns</li>
 </ol>
-<p>The ‘tidyr’ provides three functions which can be used (sometimes in combination) to solve these problems:</p>
+<p>The ‘tidyr’ provides functions which can be used (sometimes in combination) to solve these problems.</p>
 <ul>
 <li><code>gather()</code> takes multiple columns, and gathers them into key-value pairs: it makes <em>wide</em> data longer.</li>
 <li><code>spread()</code> takes two columns (key &amp; value) and spreads in to multiple columns, it makes <em>long</em> data wider.</li>
 <li><code>seperate()</code> take one column and splits it into multiple columns</li>
+<li><code>extract_numeric()</code> extracts numbers out of strings.</li>
 </ul>
 <p>So we can solve the problems as follows:</p>
 <ol style="list-style-type: decimal">
@@ -1365,47 +1366,48 @@ a</code></pre>
 ## 6     Jill  after     12</code></pre>
 <p>Another example:</p>
 <pre class="r"><code>pew &lt;- tbl_df(
-  read.csv(&quot;http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/pew.csv&quot;)
+  read_csv(&quot;http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/pew.csv&quot;)
 )
+
 pew</code></pre>
 <pre><code>## Source: local data frame [18 x 11]
 ## 
-##                   religion X..10k X.10.20k X.20.30k X.30.40k X.40.50k
-## 1                 Agnostic     27       34       60       81       76
-## 2                  Atheist     12       27       37       52       35
-## 3                 Buddhist     27       21       30       34       33
-## 4                 Catholic    418      617      732      670      638
-## 5    Don\222t know/refused     15       14       15       11       10
-## 6         Evangelical Prot    575      869     1064      982      881
-## 7                    Hindu      1        9        7        9       11
-## 8  Historically Black Prot    228      244      236      238      197
-## 9        Jehovah's Witness     20       27       24       24       21
-## 10                  Jewish     19       19       25       25       30
-## 11           Mainline Prot    289      495      619      655      651
-## 12                  Mormon     29       40       48       51       56
-## 13                  Muslim      6        7        9       10        9
-## 14                Orthodox     13       17       23       32       32
-## 15         Other Christian      9        7       11       13       13
-## 16            Other Faiths     20       33       40       46       49
-## 17   Other World Religions      5        2        3        4        2
-## 18            Unaffiliated    217      299      374      365      341
-## Variables not shown: X.50.75k (int), X.75.100k (int), X.100.150k (int),
-##   X.150k (int), Don.t.know.refused (int)</code></pre>
-<pre class="r"><code>gather(data = pew, key = range, value = frequency, X..10k:Don.t.know.refused)</code></pre>
+##                   religion &lt;$10k $10-20k $20-30k $30-40k $40-50k $50-75k
+## 1                 Agnostic    27      34      60      81      76     137
+## 2                  Atheist    12      27      37      52      35      70
+## 3                 Buddhist    27      21      30      34      33      58
+## 4                 Catholic   418     617     732     670     638    1116
+## 5    Don\222t know/refused    15      14      15      11      10      35
+## 6         Evangelical Prot   575     869    1064     982     881    1486
+## 7                    Hindu     1       9       7       9      11      34
+## 8  Historically Black Prot   228     244     236     238     197     223
+## 9        Jehovah's Witness    20      27      24      24      21      30
+## 10                  Jewish    19      19      25      25      30      95
+## 11           Mainline Prot   289     495     619     655     651    1107
+## 12                  Mormon    29      40      48      51      56     112
+## 13                  Muslim     6       7       9      10       9      23
+## 14                Orthodox    13      17      23      32      32      47
+## 15         Other Christian     9       7      11      13      13      14
+## 16            Other Faiths    20      33      40      46      49      63
+## 17   Other World Religions     5       2       3       4       2       7
+## 18            Unaffiliated   217     299     374     365     341     528
+## Variables not shown: $75-100k (int), $100-150k (int), &gt;150k (int), Don't
+##   know/refused (int)</code></pre>
+<pre class="r"><code>gather(data = pew, key = income_range, value = count, -religion)</code></pre>
 <pre><code>## Source: local data frame [180 x 3]
 ## 
-##                   religion  range frequency
-## 1                 Agnostic X..10k        27
-## 2                  Atheist X..10k        12
-## 3                 Buddhist X..10k        27
-## 4                 Catholic X..10k       418
-## 5    Don\222t know/refused X..10k        15
-## 6         Evangelical Prot X..10k       575
-## 7                    Hindu X..10k         1
-## 8  Historically Black Prot X..10k       228
-## 9        Jehovah's Witness X..10k        20
-## 10                  Jewish X..10k        19
-## ..                     ...    ...       ...</code></pre>
+##                   religion income_range count
+## 1                 Agnostic        &lt;$10k    27
+## 2                  Atheist        &lt;$10k    12
+## 3                 Buddhist        &lt;$10k    27
+## 4                 Catholic        &lt;$10k   418
+## 5    Don\222t know/refused        &lt;$10k    15
+## 6         Evangelical Prot        &lt;$10k   575
+## 7                    Hindu        &lt;$10k     1
+## 8  Historically Black Prot        &lt;$10k   228
+## 9        Jehovah's Witness        &lt;$10k    20
+## 10                  Jewish        &lt;$10k    19
+## ..                     ...          ...   ...</code></pre>
 <p>Seperate:</p>
 <pre class="r"><code>a &lt;- data.frame(
      SessionRoom = c(paste(&quot;Morning&quot;, 1:3,sep=&quot;:&quot;), paste(&quot;Evening&quot;, 1:3,sep=&quot;:&quot;)),
@@ -1414,20 +1416,20 @@ pew</code></pre>
 
 a</code></pre>
 <pre><code>##   SessionRoom outcome
-## 1   Morning:1       5
-## 2   Morning:2       4
+## 1   Morning:1       4
+## 2   Morning:2       3
 ## 3   Morning:3       1
-## 4   Evening:1       6
-## 5   Evening:2       3
-## 6   Evening:3       2</code></pre>
+## 4   Evening:1       2
+## 5   Evening:2       5
+## 6   Evening:3       6</code></pre>
 <pre class="r"><code>separate(data = a, col = SessionRoom, into = c(&quot;Time&quot;,&quot;Room&quot;), sep=&quot;:&quot;)</code></pre>
 <pre><code>##      Time Room outcome
-## 1 Morning    1       5
-## 2 Morning    2       4
+## 1 Morning    1       4
+## 2 Morning    2       3
 ## 3 Morning    3       1
-## 4 Evening    1       6
-## 5 Evening    2       3
-## 6 Evening    3       2</code></pre>
+## 4 Evening    1       2
+## 5 Evening    2       5
+## 6 Evening    3       6</code></pre>
 <p>Spread:</p>
 <pre class="r"><code> results &lt;- data.frame(
      Individual = 1:5,
@@ -1437,36 +1439,73 @@ a</code></pre>
 
 results</code></pre>
 <pre><code>##    Individual Treatment Payoff
-## 1           1         A     20
-## 2           2         A     16
-## 3           3         A     10
-## 4           4         A      6
-## 5           5         A     17
-## 6           1         B     19
-## 7           2         B      7
-## 8           3         B      2
-## 9           4         B     11
-## 10          5         B      4
-## 11          1         C      8
-## 12          2         C     14
-## 13          3         C     13
-## 14          4         C     12
-## 15          5         C      1
-## 16          1         D      9
-## 17          2         D      3
-## 18          3         D      5
-## 19          4         D     18
-## 20          5         D     15</code></pre>
+## 1           1         A      9
+## 2           2         A      5
+## 3           3         A     17
+## 4           4         A     13
+## 5           5         A      6
+## 6           1         B     15
+## 7           2         B      4
+## 8           3         B     14
+## 9           4         B     19
+## 10          5         B     12
+## 11          1         C     18
+## 12          2         C      1
+## 13          3         C     20
+## 14          4         C     11
+## 15          5         C      2
+## 16          1         D      8
+## 17          2         D     10
+## 18          3         D      7
+## 19          4         D      3
+## 20          5         D     16</code></pre>
 <pre class="r"><code>spread(data = results, key = Treatment,value = Payoff)</code></pre>
 <pre><code>##   Individual  A  B  C  D
-## 1          1 20 19  8  9
-## 2          2 16  7 14  3
-## 3          3 10  2 13  5
-## 4          4  6 11 12 18
-## 5          5 17  4  1 15</code></pre>
+## 1          1  9 15 18  8
+## 2          2  5  4  1 10
+## 3          3 17 14 20  7
+## 4          4 13 19 11  3
+## 5          5  6 12  2 16</code></pre>
 </div>
-<div id="exercise-how-does-this-work" class="section level1">
-<h1>Exercise: How does this work?</h1>
+<div id="tidyr-exercises" class="section level1">
+<h1>Tidyr exercises</h1>
+<div id="exercise-1-1" class="section level3">
+<h3>Exercise 1</h3>
+<p>Load a dataset of chart songs, the first time they entered the US top 100, and their rank in each week.</p>
+<pre class="r"><code>library(readr)
+billboard &lt;- read_csv(&quot;https://raw.githubusercontent.com/hadley/tidyr/master/vignettes/billboard.csv&quot;)
+billboard</code></pre>
+<pre><code>## Source: local data frame [317 x 81]
+## 
+##    year         artist                   track time date.entered wk1 wk2
+## 1  2000          2 Pac Baby Don't Cry (Keep... 4:22   2000-02-26  87  82
+## 2  2000        2Ge+her The Hardest Part Of ... 3:15   2000-09-02  91  87
+## 3  2000   3 Doors Down              Kryptonite 3:53   2000-04-08  81  70
+## 4  2000   3 Doors Down                   Loser 4:24   2000-10-21  76  76
+## 5  2000       504 Boyz           Wobble Wobble 3:35   2000-04-15  57  34
+## 6  2000           98^0 Give Me Just One Nig... 3:24   2000-08-19  51  39
+## 7  2000        A*Teens           Dancing Queen 3:44   2000-07-08  97  97
+## 8  2000        Aaliyah           I Don't Wanna 4:15   2000-01-29  84  62
+## 9  2000        Aaliyah               Try Again 4:03   2000-03-18  59  53
+## 10 2000 Adams, Yolanda           Open My Heart 5:30   2000-08-26  76  76
+## ..  ...            ...                     ...  ...          ... ... ...
+## Variables not shown: wk3 (int), wk4 (int), wk5 (int), wk6 (int), wk7
+##   (int), wk8 (int), wk9 (int), wk10 (int), wk11 (int), wk12 (int), wk13
+##   (int), wk14 (int), wk15 (int), wk16 (int), wk17 (int), wk18 (int), wk19
+##   (int), wk20 (int), wk21 (int), wk22 (int), wk23 (int), wk24 (int), wk25
+##   (int), wk26 (int), wk27 (int), wk28 (int), wk29 (int), wk30 (int), wk31
+##   (int), wk32 (int), wk33 (int), wk34 (int), wk35 (int), wk36 (int), wk37
+##   (int), wk38 (int), wk39 (int), wk40 (int), wk41 (int), wk42 (int), wk43
+##   (int), wk44 (int), wk45 (int), wk46 (int), wk47 (int), wk48 (int), wk49
+##   (int), wk50 (int), wk51 (int), wk52 (int), wk53 (int), wk54 (int), wk55
+##   (int), wk56 (int), wk57 (int), wk58 (int), wk59 (int), wk60 (int), wk61
+##   (int), wk62 (int), wk63 (int), wk64 (int), wk65 (int), wk66 (lgl), wk67
+##   (lgl), wk68 (lgl), wk69 (lgl), wk70 (lgl), wk71 (lgl), wk72 (lgl), wk73
+##   (lgl), wk74 (lgl), wk75 (lgl), wk76 (lgl)</code></pre>
+<p>Why is the data on chart rankings not tidy? Tidy it! Then use the <code>extract_numeric()</code> function to make the week column numeric. Use dplyr to drop any observations where the song is not in the charts (rank = NA) and to sort by artist, then track, then week.</p>
+</div>
+<div id="exercise-2-1" class="section level3">
+<h3>Exercise 2</h3>
 <pre class="r"><code>library(dplyr)</code></pre>
 <pre class="r"><code>#create a nasty dataset
 messy &lt;- data.frame(
@@ -1479,12 +1518,13 @@ messy &lt;- data.frame(
         stringsAsFactors = F
      )
 
-gathered   &lt;- gather(messy,key,value,name_father:income_mother)
-seperated  &lt;- separate(gathered,key,c(&quot;what&quot;,&quot;who&quot;),sep=&quot;_&quot;)
+gathered   &lt;- gather(messy, key, value, name_father:income_mother)
+seperated  &lt;- separate(gathered, key,c(&quot;what&quot;,&quot;who&quot;),sep=&quot;_&quot;)
 tidied &lt;- spread(seperated,what,value)</code></pre>
 </div>
-<div id="broom-package" class="section level1">
-<h1>broom package</h1>
+</div>
+<div id="broom-package-code" class="section level1">
+<h1>broom package: Code</h1>
 <p>Provides a nice way of getting a regression output into a data frame</p>
 <pre class="r"><code>#install.packages(&quot;broom&quot;)
 library(broom)
@@ -1501,8 +1541,9 @@ tidy(lmfit) %&gt;%
 ## 1 (Intercept) 37.285126  1.877627 19.857575 8.241799e-19   OLS
 ## 2          wt -5.344472  0.559101 -9.559044 1.293959e-10   OLS</code></pre>
 </div>
-<div id="exercise---what-does-this-code-do" class="section level1">
-<h1>Exercise - what does this code do?</h1>
+<div id="broom-package-exercise" class="section level1">
+<h1>broom Package: Exercise</h1>
+<p>What does this code do?</p>
 <pre class="r"><code>library(dplyr)
 library(broom)
 
@@ -1516,16 +1557,17 @@ doOLS &lt;- function(i) {
 hundred_OLS &lt;- lapply(1:100, doOLS)
 results &lt;- do.call(rbind,hundred_OLS)</code></pre>
 </div>
-<div id="exercise---loading-and-merging-a-messy-data-structure" class="section level1">
-<h1>Exercise - loading and merging a messy data structure</h1>
-<p>Download ‘fuel-economy.zip’ from <a href="http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/fuel-economy.zip" class="uri">http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/fuel-economy.zip</a> and extract it somewhere on your PC.</p>
-<p>It contains fuel efficiency data for a number of cars from the USA’s Environmental Protection Agency for the years 1978-183. Each year is in a seperate CSV file. Data on manufacturers is stored in a seperate CSV file, which we want to merge in. There is further details on some vechiles in another set of CSV files, which we’ll also merge in.</p>
+<div id="exercise-tying-it-all-together" class="section level1">
+<h1>Exercise: Tying it all together</h1>
+<p>In this exercise you will use much of what we have covered so far in order to load and merge a messy data structure.</p>
+<p>Begin by downloading ‘fuel-economy.zip’ from <a href="http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/fuel-economy.zip" class="uri">http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/fuel-economy.zip</a> and extract it somewhere on your PC.</p>
+<p>It contains fuel efficiency data for a number of cars from the USA’s Environmental Protection Agency for the years 1978-183. Data for each year is in a seperate CSV file. Data on vehicle manufacturers is stored in a seperate CSV file, which we want to merge in. There is further details on some vehicles in another set of CSV files, which we’ll also merge in.</p>
 <p>Files:</p>
 <ul>
 <li>*CG.csv - fuel economy data for cars</li>
 <li>colnames78-83.csv - column names for the CSV files</li>
 <li>mfgcodes.csv - manufacture code -&gt; name lookup table</li>
-<li>*CARLIN.csv - extra information on carlines (internal )</li>
+<li>*CARLIN.csv - extra information on carlines (internal dimensions)</li>
 </ul>
 <p>Some information:</p>
 <ul>
@@ -1535,12 +1577,12 @@ results &lt;- do.call(rbind,hundred_OLS)</code></pre>
 </ul>
 <p>Your task is to merge this data into one nice data set. Namely:</p>
 <ol style="list-style-type: decimal">
-<li><p>Read in all the *CG.csv files and merge them together. Add a ‘year’ column which tells you which file each observation came from. (Make sure it’s a numeric!)</p></li>
+<li><p>Read in all the *CG.csv files and join them together. Add a ‘year’ column which tells you which file each observation came from. (Make sure it’s a numeric!)</p></li>
 <li><p>Unfortunately, the column names are missing in the all csv files, but you can find them listed in the ‘abbr’ column in the “colnames78-83.csv” file. Add them in</p></li>
-<li><p>The carline.code column is numeric - so we’ve lost the leading zeros. Convert the column to strings (as.character) and use <code>str_pad</code> from the <code>stringr</code> package to add leading zeros.</p></li>
+<li><p>The carline.code column is numeric - so we’ve lost the leading zeros, remember carline codes are always three characters long. Convert the column to strings (<code>as.character()</code>) and use <code>str_pad</code> from the <code>stringr</code> package to add leading zeros.</p></li>
 <li><p>Extract the manufacture code (first three digits) using the <code>str_sub</code> function from the <code>stringr</code> package.</p></li>
-<li><p>Now merge in the manufacturer names from mfgcodes.csv. Two problems with that file you’ll want to solve before the merge: there are junk columns “V14” and “V1”, and the manufacture codes have got spaces before/after them. For the later, find a function in the string_r package by finding it’s documentation online or with <code>help(package = stringr)</code>.</p></li>
-<li><p>Now we want to merge in the data stored in the *CARLIN.csv files. This contains further information in each carline (for example, how big the interior is for twodoor/fourdoor/hatchback body types). Read all these files in to one data frame. Once again, column names are missing. They should be as follows: “manufacturer”, “class”,“f1”,“f2”,“f3”, “twodoor.p”, “twodoor.l”, “fourdoor.p”, “fourdoor.l”, “hatch.l”, “model”, “codesymm”</p></li>
+<li><p>Now merge in the manufacturer names from mfgcodes.csv. Two problems with that file you’ll want to solve before the merge: there are junk columns “V14” and “V1”, and the manufacture codes have got spaces before/after them. Strip that whitespace using an appropraite function in the string_r package: find its documentation online or with <code>help(package = stringr)</code>.</p></li>
+<li><p>Now we want to merge in the data stored in the *CARLIN.csv files. This contains further information on each carline (for example, how big the interior is for twodoor/fourdoor/hatchback body types). Read all these files in to one data frame. Once again, column names are missing. They should be as follows: “manufacturer”, “class”,“f1”,“f2”,“f3”, “twodoor.p”, “twodoor.l”, “fourdoor.p”, “fourdoor.l”, “hatch.l”, “model”, “codesymm”.</p></li>
 <li><p>Get rid of the following columns from the carlinedata merged file, they contain misleading information: manufacturer, class, f1, f2, f3, model</p></li>
 <li>We are nearly ready to merge the cars data with all the carline data. But to do so, we need a common ID. To do so:
 <ol style="list-style-type: lower-alpha">
