@@ -68,6 +68,11 @@ img {
 <ul>
 <li><a href="#do.call---loading-in-multiple-data-files"><code>do.call</code> - loading in multiple data files</a></li>
 <li><a href="#regressions">Regressions</a></li>
+<li><a href="#exercise-interaction-terms">Exercise: Interaction terms</a></li>
+<li><a href="#hypothesis-testing">Hypothesis testing</a></li>
+<li><a href="#heteroskedasticity-robust-ses">Heteroskedasticity robust SEs</a></li>
+<li><a href="#mini-exercise">Mini exercise:</a></li>
+<li><a href="#clustered-standard-errors">Clustered standard errors</a></li>
 <li><a href="#dplyr">dplyr</a></li>
 <li><a href="#dplyr-code">dplyr: Code</a></li>
 <li><a href="#dplyr-exercises">dplyr exercises</a></li>
@@ -109,7 +114,7 @@ rep(c(1,2,3),times=c(3,2,1))</code></pre>
 <p>Run OLS regressions in R using the <code>lm()</code> command from the <code>lmtest</code> package. We’ll run the following regressions on a dataset of college admission results:</p>
 <p><span class="math">\[Admission_i = GRE_i + GPA_i + u_i\]</span></p>
 <p>Begin by loading packages and the data</p>
-<pre class="r"><code>#install.packages(lmtest)
+<pre class="r"><code>#install.packages(&quot;lmtest&quot;)
 library(lmtest)
 
 #Load in the admissions data
@@ -213,17 +218,19 @@ summary(public_schools_r)</code></pre>
 ## Multiple R-squared:  0.6553, Adjusted R-squared:  0.6407 
 ## F-statistic: 44.68 on 2 and 47 DF,  p-value: 1.345e-11</code></pre>
 </div>
-<div id="exercise-interaction-terms" class="section level2">
-<h2>Exercise: Interaction terms</h2>
-<p>Download the file at <a href="http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/mroz.dta" class="uri">http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/mroz.dta</a> and store it in a data farme called <code>mroz</code> using the <code>read_stata()</code> function from the ‘haven’ package. The file contains income and demographic data for families.</p>
+</div>
+<div id="exercise-interaction-terms" class="section level1">
+<h1>Exercise: Interaction terms</h1>
+<p>Download the file at <a href="http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/mroz.dta" class="uri">http://markwestcott34.github.io/economics/teaching/ss2015/R/datasets/mroz.dta</a> and store it in a dataframe called <code>mroz</code> using the <code>read_stata()</code> function from the ‘haven’ package. The file contains income and demographic data for families.</p>
 <ol style="list-style-type: decimal">
-<li><p>Use the <code>cut</code> function to group the age column by categories: 30-39, 40-49, 50-59. Hint: Figure out how <code>cut(1:20, breaks = c(0,5,10,20))</code> works. Add this category to the <code>mroz</code> data frame.</p></li>
+<li><p>Use the <code>cut</code> function to group the age column by categories: 30-39, 40-49, 50-59 (hint: figure out how <code>cut(1:20, breaks = c(0,5,10,20))</code> works). Add the age category to the <code>mroz</code> data frame.</p></li>
 <li><p>Run the following regression:</p></li>
 </ol>
-<p><span class="math">\[log(faminc_i) = agecat_i + city_i + city_i * agecat_i\]</span></p>
+<p><span class="math">\[log(faminc_i) = agecat_i + city_i + city_i * agecat_i + u_i\]</span></p>
+<p>where <span class="math">\(city_i * agecat_i\)</span> is the interaction between those two terms.</p>
 </div>
-<div id="hypothesis-testing" class="section level2">
-<h2>Hypothesis testing</h2>
+<div id="hypothesis-testing" class="section level1">
+<h1>Hypothesis testing</h1>
 <p>Use the <code>linearHypothesis</code> function from the <code>car</code> package to test linear hypothesis or run joint F-tests.</p>
 <pre class="r"><code>#install.packages(&quot;car&quot;)
 library(car) #to get the 'Duncan' dataset and the linearHypothesis function
@@ -289,8 +296,8 @@ linearHypothesis(Duncan_reg  , matchCoefs(Duncan_reg, &quot;:&quot;))</code></pr
 ## 1     40 3798.0                           
 ## 2     36 3350.6  4    447.31 1.2015  0.327</code></pre>
 </div>
-<div id="heteroskedasticity-robust-ses" class="section level2">
-<h2>Heteroskedasticity robust SEs</h2>
+<div id="heteroskedasticity-robust-ses" class="section level1">
+<h1>Heteroskedasticity robust SEs</h1>
 <p>Not <em>quite</em> as easy as in Stata. You need to get a variance/co-variance matrix and pass that to <code>coeftest()</code> or <code>linearHypothesis()</code>.</p>
 <pre class="r"><code>vc_homo &lt;- vcov(public_schools_r)  #homo
 vc_hc3 &lt;- vcovHC(public_schools_r) #robust, default is HC3
@@ -355,12 +362,13 @@ coeftest(public_schools_r, vc_homo) #same thing as coeftest(public_schools_r)</c
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div id="mini-exercise" class="section level2">
-<h2>Mini exercise:</h2>
-<p>Create a dataframe which shows the results of the public schools regression with two different standard error types. It should show the results from the HC3 and the HC1 tests on top of each other, without the intercept row, and with a new column which indicates which model the estimates came from.</p>
+<div id="mini-exercise" class="section level1">
+<h1>Mini exercise:</h1>
+<p>Create a dataframe which shows the results of the public schools regression with two different standard error types.</p>
+<p>It should show the results from the HC3 and the HC1 tests on top of each other, without the intercept row, and with a new column which indicates which model the estimates came from.</p>
 </div>
-<div id="clustered-standard-errors" class="section level2">
-<h2>Clustered standard errors</h2>
+<div id="clustered-standard-errors" class="section level1">
+<h1>Clustered standard errors</h1>
 <p>Use the <code>cluster.vcov()</code> function from the <code>multiwayvcvov</code> package to calculate cluster-robust variance/covariance matrix</p>
 <pre class="r"><code>#Clustered SEs
 library(multiwayvcov)
@@ -389,11 +397,10 @@ coeftest(m1, boot_year_vcov)</code></pre>
 ## t test of coefficients:
 ## 
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.029680   0.054983  0.5398   0.5894    
-## x           1.034833   0.061377 16.8604   &lt;2e-16 ***
+## (Intercept) 0.029680   0.053255  0.5573   0.5773    
+## x           1.034833   0.065650 15.7630   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-</div>
 <div id="probit-and-logit" class="section level2">
 <h2>Probit and logit</h2>
 <p>Probit and logit are likewise easy:</p>
@@ -1088,11 +1095,11 @@ flights %&gt;% sample_n(5)</code></pre>
 <pre><code>## Source: local data frame [5 x 22]
 ## 
 ##   Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1 2011     4         15         5     758     911            WN      1076
-## 2 2011     6         10         5     839    1137            FL       298
-## 3 2011     6         11         6    1040    1456            CO       358
-## 4 2011    10         21         5    1443    1653            CO      1571
-## 5 2011     8         12         5    1859    2128            CO       860
+## 1 2011     6         16         4    1825    1953            XE      3127
+## 2 2011    11         29         2    2020    2210            XE      4674
+## 3 2011     2         15         2    1913    2200            CO       616
+## 4 2011     9         19         1    1609    1746            XE      2162
+## 5 2011     6         19         7    1424    1515            XE      2631
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
 ##   Distance (int), TaxiIn (int), TaxiOut (int), Cancelled (int),
@@ -1102,16 +1109,16 @@ flights %&gt;% sample_frac(0.25, replace=TRUE)</code></pre>
 <pre><code>## Source: local data frame [56,874 x 22]
 ## 
 ##    Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
-## 1  2011    12         11         7    1726    1840            OO      5159
-## 2  2011     5         13         5      NA      NA            XE      2612
-## 3  2011     4         23         6    1428    1523            XE      2591
-## 4  2011     4         11         1    2105    2314            XE      2976
-## 5  2011     5         29         7    1123    1327            CO       270
-## 6  2011     6         25         6    1648    1805            XE      2920
-## 7  2011    12         22         4    1517    1701            XE      4577
-## 8  2011     5         29         7     853    1015            XE      2967
-## 9  2011     8         29         1    1857    1951            WN        52
-## 10 2011     5         22         7    1128    1230            XE      2895
+## 1  2011     7         27         3     722    1052            CO      1849
+## 2  2011     4          1         5    1243    1443            OO      1191
+## 3  2011    11         12         6    1940    2241            WN      2081
+## 4  2011     3         13         7    1023    1326            CO      1751
+## 5  2011    10         27         4    1536    1644            WN        31
+## 6  2011     1         10         1     643     737            WN      2984
+## 7  2011    12         16         5    1902    2121            XE      4588
+## 8  2011     5         20         5    1508    1630            WN      1675
+## 9  2011     4         24         7    1021    1334            XE      2295
+## 10 2011     1         12         3     835     934            WN         1
 ## ..  ...   ...        ...       ...     ...     ...           ...       ...
 ## Variables not shown: TailNum (chr), ActualElapsedTime (int), AirTime
 ##   (int), ArrDelay (int), DepDelay (int), Origin (chr), Dest (chr),
@@ -1127,7 +1134,7 @@ flights %&gt;% sample_frac(0.25, replace=TRUE)</code></pre>
 <ul>
 <li><p>Use <code>filter</code> to extract a dataframe of chick weights in time period 21</p></li>
 <li><p>Use <code>rename</code> to rename the ‘weight’ column of chicks to ‘Weight’ to make things consistent</p></li>
-<li><p>Use <code>mutate</code> to create a new ‘Height’ column which is calculated as <span class="math">\(Height_i = Weight_i / 3 + N(2, 0,5)\)</span>. Make double sure that you have really sampled from the normal distribution seperately for each row!</p></li>
+<li><p>Use <code>mutate</code> to create a new ‘Height’ column which is calculated as <span class="math">\(Height_i = Weight_i / 3 + N(2, 0.5)\)</span>. Make double sure that you have really sampled from the normal distribution seperately for each row!</p></li>
 <li><p>Use <code>group_by</code> and <code>summarize</code> to calculate the mean weight for each chick. Now use <code>arrange</code> to find the chicks with the highest/lowest mean weights.</p></li>
 <li><p>Create a dataframe called ‘summary’ which summarises the chicks in each time period. It should have the following information: number of observations, mean weight, mean height, standard deviation of weight, standard deviation of height.</p></li>
 <li><p>Notice how the dataset has fewer chicks in the later periods than the earlier – this is because of deaths. Using the ‘lag’ function, create a Deaths column to show how many chicks die in each period.</p></li>
@@ -1416,20 +1423,20 @@ pew</code></pre>
 
 a</code></pre>
 <pre><code>##   SessionRoom outcome
-## 1   Morning:1       2
-## 2   Morning:2       3
-## 3   Morning:3       1
-## 4   Evening:1       5
-## 5   Evening:2       6
-## 6   Evening:3       4</code></pre>
+## 1   Morning:1       3
+## 2   Morning:2       4
+## 3   Morning:3       6
+## 4   Evening:1       1
+## 5   Evening:2       5
+## 6   Evening:3       2</code></pre>
 <pre class="r"><code>separate(data = a, col = SessionRoom, into = c(&quot;Time&quot;,&quot;Room&quot;), sep=&quot;:&quot;)</code></pre>
 <pre><code>##      Time Room outcome
-## 1 Morning    1       2
-## 2 Morning    2       3
-## 3 Morning    3       1
-## 4 Evening    1       5
-## 5 Evening    2       6
-## 6 Evening    3       4</code></pre>
+## 1 Morning    1       3
+## 2 Morning    2       4
+## 3 Morning    3       6
+## 4 Evening    1       1
+## 5 Evening    2       5
+## 6 Evening    3       2</code></pre>
 <p>Spread:</p>
 <pre class="r"><code> results &lt;- data.frame(
      Individual = 1:5,
@@ -1439,33 +1446,33 @@ a</code></pre>
 
 results</code></pre>
 <pre><code>##    Individual Treatment Payoff
-## 1           1         A      8
+## 1           1         A     19
 ## 2           2         A     13
-## 3           3         A     12
-## 4           4         A     20
-## 5           5         A     10
-## 6           1         B      9
-## 7           2         B     11
-## 8           3         B      3
-## 9           4         B      5
+## 3           3         A     15
+## 4           4         A      1
+## 5           5         A      8
+## 6           1         B      6
+## 7           2         B      3
+## 8           3         B      7
+## 9           4         B     16
 ## 10          5         B     18
-## 11          1         C      4
-## 12          2         C     15
-## 13          3         C      7
+## 11          1         C      5
+## 12          2         C     11
+## 13          3         C     10
 ## 14          4         C     17
-## 15          5         C      6
-## 16          1         D     16
-## 17          2         D     19
-## 18          3         D      1
+## 15          5         C     12
+## 16          1         D     14
+## 17          2         D      4
+## 18          3         D     20
 ## 19          4         D      2
-## 20          5         D     14</code></pre>
+## 20          5         D      9</code></pre>
 <pre class="r"><code>spread(data = results, key = Treatment,value = Payoff)</code></pre>
 <pre><code>##   Individual  A  B  C  D
-## 1          1  8  9  4 16
-## 2          2 13 11 15 19
-## 3          3 12  3  7  1
-## 4          4 20  5 17  2
-## 5          5 10 18  6 14</code></pre>
+## 1          1 19  6  5 14
+## 2          2 13  3 11  4
+## 3          3 15  7 10 20
+## 4          4  1 16 17  2
+## 5          5  8 18 12  9</code></pre>
 </div>
 <div id="tidyr-exercises" class="section level1">
 <h1>Tidyr exercises</h1>
@@ -1506,6 +1513,7 @@ billboard</code></pre>
 </div>
 <div id="exercise-2-1" class="section level3">
 <h3>Exercise 2</h3>
+<p>How does this code work?</p>
 <pre class="r"><code>library(dplyr)</code></pre>
 <pre class="r"><code>#create a nasty dataset
 messy &lt;- data.frame(
