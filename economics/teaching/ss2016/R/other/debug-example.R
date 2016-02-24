@@ -14,3 +14,5 @@ doSomething <- function(a) {
     sqrtPlusFour(a)
   }
 }
+
+doSomething(4)
