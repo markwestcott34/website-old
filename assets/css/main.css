@@ -1,14 +1,14 @@
-body { margin: 60px auto; width: 80%; background: #2d2d2d; color: white; font-family: 'Gentium Basic', serif;}
+body { margin: 60px auto; width: 80%; background: #2d2d2d; color: white; font-family: 'Open Sans', sans-serif;}
 
 a { text-decoration: none; color: #a6a6a6; }
 a:hover { text-decoration: underline; }
 
-p, ul { font-size: 1.3em; line-height: 1.4em; color: white; }
+p { font-size: 1.3em; line-height: 1.4em; color: white; }
 table { font-size: 1.3em; line-height: 1.4em; color: white; }
 
 h1, h2, h3, h4 {  margin-bottom: 0.5em; }
 h1 { font-size: 3em;  }
-h2 { font-size: 1.8em; padding-top: 1em; padding-bottom: 1em; border: 1px solid white; text-align: center; }
+awayh2 { font-size: 1.8em; padding-top: 1em; padding-bottom: 1em; border: 1px solid white; text-align: center; }
 h3 { font-size: 2.0em; }
 h4 { font-size: 1.3em; }
 .me { font-size: 2.5em }
@@ -18,3 +18,52 @@ nav ul, footer ul { font-size: 1em; padding: 0px; list-style: none; }
 nav ul li, footer ul li { display: inline; margin-right: 20px; }
 
 footer { border-top: 1px solid #d5d5d5; font-size: .8em; }
+
+
+.portrait{
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	margin: 0 auto;
+}
+
+.navbar-brand {
+	color: white;
+}
+
+#buffer {
+	padding-bottom: 5em;
+}
+
+.leftcol {
+	text-align: center;
+}
+
+#contact {
+	padding-top: 2em;
+}
+
+.fa {
+  font-size: 2em;
+}
+
+.fa {
+	margin-right: 15px;
+}
+
+#main-section {
+	padding-top: 100px;
+}
+
+.home-section {
+	padding-top: 125px;
+	padding-bottom: 125px;
+}
+
+
+
+#research ul { list-style: none;  padding-left: 0em;}
+#research li {padding-bottom: 15px;}
+.research_item {margin-bottom: 0px;}
+.coauthor { font-size: 1em; margin-bottom: 0em;}
+.research_link {font-size: 1em; padding-top: 0.2em;}
